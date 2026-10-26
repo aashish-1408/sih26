@@ -1,19 +1,19 @@
 <div align="center">
 
-<img src="docs/assets/brand/edusync-lockup.png" alt="EduSynC" height="220" />
+<img src="docs/assets/brand/edusync-lockup.png" alt="Veriducate" height="220" />
 
-# EduSynC
+# Veriducate
 
 **The APAAR ID Student Data Management &amp; Verification Platform**
 
-[Website &amp; landing page →](https://kumaribaishnabidas.github.io/EduSynC/) · [Source code](https://github.com/kumaribaishnabidas/EduSynC) · [Backend documentation](edusync/README.md) · [App documentation](Acadentrix/README.md)
+[Website &amp; landing page →](https://kumaribaishnabidas.github.io/Veriducate/) · [Source code](https://github.com/kumaribaishnabidas/Veriducate) · [Backend documentation](backend/README.md) · [App documentation](Acadentrix/README.md)
 
 </div>
 
 ---
 
-> **A note on the names.** The product is **EduSynC**. The code base keeps its
-> earlier internal identifiers - the `edusync/` Python package and the
+> **A note on the names.** The product is **Veriducate**. The code base keeps its
+> earlier internal identifiers - the `backend/` Python package and the
 > `com.acadentrix.app` Android package - because renaming them would be a
 > large, risky change with no functional benefit. The user-facing text is
 > consistent everywhere.
@@ -38,7 +38,7 @@ institutions:
 | Part | Directory | Stack |
 |---|---|---|
 | Web frontend | `frontend/` | React 19, Vite 6, Tailwind CSS 4, Recharts 3, React Router 7 |
-| Python backend | `edusync/` | FastAPI, Motor (async MongoDB), Pydantic v2, `cryptography` |
+| Python backend | `backend/` | FastAPI, Motor (async MongoDB), Pydantic v2, `cryptography` |
 | Android client | `Acadentrix/` | Kotlin 2.2, Jetpack Compose, Material 3, Room |
 
 The **Academic Record Change Impact Detector** is the headline feature: preview a
@@ -51,13 +51,13 @@ without ever silently changing an official academic record.
 
 | | |
 | --- | --- |
-| **Product / project name** | **EduSynC** |
-| **Brand name and logo** | **EduSynC** |
+| **Product / project name** | **Veriducate** |
+| **Brand name and logo** | **Veriducate** |
 | **Package / application id** | `com.acadentrix.app` |
 | **Gradle project name** | `Acadentrix` |
-| **Backend package** | `edusync/` |
+| **Backend package** | `backend/` |
 
-The EduSynC logo is the artwork the team supplied, shipped verbatim — as the launcher icon
+The Veriducate logo is the artwork the team supplied, shipped verbatim — as the launcher icon
 (adaptive, with a themed-monochrome layer), in the app's header, on the degree certificate and
 across the website. The brand palette is sampled directly from that artwork:
 navy `#14246B` / `#0F2F73`, blue `#0F3A8A` / `#1558B8`, teal `#12B886`.
@@ -69,7 +69,7 @@ Source assets live in [`docs/assets/brand/`](docs/assets/brand/).
 ## What is in this repository
 
 ```
-EduSynC/
+Veriducate/
 ├── README.md                 ← you are here
 ├── .gitignore
 ├── .gitattributes
@@ -78,15 +78,15 @@ EduSynC/
 ├── render.yaml               ← the Render deployment of the backend
 ├── docs/                     ← the website & landing page (GitHub Pages)
 │   ├── index.html
-│   └── assets/brand/         ← EduSynC logo artwork
-├── edusync/                  ← the Python backend (FastAPI + MongoDB)
+│   └── assets/brand/         ← Veriducate logo artwork
+├── backend/                  ← the Python backend (FastAPI + MongoDB)
 │   ├── app/                  ← core, models, schemas, api, repositories, services, audit
 │   ├── tests/                ← the pytest suite
 │   ├── Dockerfile
 │   └── docs/architecture.md  ← the full design
 ├── frontend/                 ← the React web application
 │   ├── src/                  ← pages, components, hooks, services, utils
-│   ├── public/brand/         ← EduSynC logo artwork
+│   ├── public/brand/         ← Veriducate logo artwork
 │   ├── vercel.json           ← the Vercel deployment of the frontend
 │   └── vite.config.js
 └── Acadentrix/               ← the Android application
@@ -103,7 +103,7 @@ EduSynC/
 There are **two implementations of the same rules**, and that is deliberate:
 
 * **`Acadentrix/`** is the offline-first Android client (Kotlin, Compose, Room).
-* **`edusync/`** is the server (FastAPI, MongoDB) and the web portal.
+* **`backend/`** is the server (FastAPI, MongoDB) and the web portal.
 
 The APAAR validator, the anomaly engine, the seal format and the QR payload
 are specified identically in both, so the phone and the server can never
@@ -129,11 +129,11 @@ sanctioned capacity, the student register, the CSV batch uploader with a
 row-by-row validation preview, the anomaly inspector with a review workflow,
 the **change impact** page, the credential verifier, and the report centre.
 
-### 2. The Python backend (`edusync/`)
+### 2. The Python backend (`backend/`)
 
 ```bash
-cd edusync
-python -m venv .venv && .venv\Scripts\activate   # Windows
+cd backend
+python -m venv .venv && .venv\Scripts\activate   # Windows (.venv/bin/activate on macOS/Linux)
 pip install -r requirements.txt
 cp .env.example .env                              # then edit the secrets
 python -m app.scripts.seed                        # synthetic demo dataset
@@ -159,8 +159,8 @@ APAAR QR badges, PDF certificates carrying the APAAR ID, CSV/PDF regulatory
 reports, an explainable per-institution risk score, versioned seat policy, and
 a hash-chained audit trail.
 
-**258 pytest tests, all passing.** See [`edusync/README.md`](edusync/README.md)
-and [`edusync/docs/architecture.md`](edusync/docs/architecture.md).
+**258 pytest tests, all passing.** See [`backend/README.md`](backend/README.md)
+and [`backend/docs/architecture.md`](backend/docs/architecture.md).
 
 #### Google sign-in
 
@@ -178,7 +178,7 @@ attaches the Google identity to it, and only a genuinely new person gets a
 new account with the restricted `verifier` role.
 
 It is off until you give the backend a client of your own — see
-[`edusync/README.md`](edusync/README.md#google-sign-in).
+[`backend/README.md`](backend/README.md#google-sign-in).
 
 ### 3. The Android client (`Acadentrix/`)
 
@@ -291,7 +291,7 @@ The configuration files are [`render.yaml`](render.yaml) and
 ### 4. Set `FRONTEND_ORIGIN` and redeploy the backend
 
 `FRONTEND_ORIGIN` is the Vercel URL of the frontend, e.g.
-`https://edusync.vercel.app`. It is what the API uses for CORS, and it is
+`https://veriducate.vercel.app`. It is what the API uses for CORS, and it is
 the origin printed on a QR badge. Set it on Render and **redeploy the
 backend** — the CORS list is read at start-up.
 
@@ -301,9 +301,9 @@ Seeding **never** runs on start-up against a real database. Run it from a
 machine that can reach Atlas:
 
 ```bash
-cd edusync
+cd backend
 MONGODB_URL='mongodb+srv://...' \
-MONGODB_DATABASE=edusync \
+MONGODB_DATABASE=veriducate \
 ENVIRONMENT=production \
 ALLOW_PRODUCTION_SEED=true \
 DEMO_PASSWORD='choose-a-demo-password' \
@@ -318,16 +318,16 @@ When `DEMO_PASSWORD` is empty, a password is generated and printed **once**.
 
 ### Environment variables
 
-**Backend** (set on Render, or in `edusync/.env` locally):
+**Backend** (set on Render, or in `backend/.env` locally):
 
 | Name | Required | Placeholder | Where |
 |---|---|---|---|
 | `MONGODB_URL` | yes | `mongodb+srv://user:pass@cluster.mongodb.net` | Render (secret) |
-| `MONGODB_DATABASE` | no | `edusync` | Render |
+| `MONGODB_DATABASE` | no | `veriducate` | Render |
 | `SECRET_KEY` | yes | `python -c "import secrets; print(secrets.token_urlsafe(48))"` | Render (secret) |
 | `SEAL_HMAC_KEY` | yes | `python -c "import secrets; print(secrets.token_urlsafe(32))"` | Render (secret) |
 | `MATCH_KEY` | no | falls back to `SEAL_HMAC_KEY` | Render |
-| `FRONTEND_ORIGIN` | yes | `https://edusync.vercel.app` | Render |
+| `FRONTEND_ORIGIN` | yes | `https://veriducate.vercel.app` | Render |
 | `CORS_ORIGINS` | no | extra origins, comma separated | Render |
 | `ENVIRONMENT` | yes | `production` | Render (`ENV` also works) |
 | `ALLOW_IN_MEMORY_DB` | no | `false` — never `true` in production | Render |
@@ -348,7 +348,7 @@ When `DEMO_PASSWORD` is empty, a password is generated and printed **once**.
 
 | Name | Required | Placeholder | Where |
 |---|---|---|---|
-| `VITE_API_URL` | no | `https://edusync-api.onrender.com` | Vercel (build time) |
+| `VITE_API_URL` | no | `https://veriducate-api.onrender.com` | Vercel (build time) |
 
 ### Smoke test checklist
 
@@ -542,7 +542,7 @@ document.
 ### The Python platform
 
 ```bash
-cd edusync
+cd backend
 pip install -r requirements.txt
 cp .env.example .env            # then edit the secrets
 python -m app.scripts.seed
@@ -620,7 +620,7 @@ statistics, review-task and theme commands, and read fixed templates based on
 structured API data. It cannot apply corrections, dismiss tasks, revoke
 tokens, or perform any other state-changing action. APAAR IDs are masked before
 display or read-aloud, and audio is never recorded, stored or sent to the
-EduSynC backend.
+Veriducate backend.
 
 Voice input is opt-in. A translated privacy notice explains that some browsers
 process microphone audio through the browser vendor's cloud speech service.
@@ -651,4 +651,4 @@ so the portal is demonstrable on a laptop.
 
 ## Team
 
-**EduSynC**.
+**Veriducate**.
