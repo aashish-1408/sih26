@@ -1,6 +1,5 @@
 <div align="center">
 
-<img src="docs/assets/brand/edusync-lockup.png" alt="Veriducate" height="220" />
 
 # Veriducate
 
