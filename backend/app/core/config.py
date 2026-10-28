@@ -9,10 +9,10 @@ from __future__ import annotations
 
 import secrets
 from functools import lru_cache
-from typing import Annotated, List
+from typing import List
 
 from pydantic import Field, field_validator, model_validator
-from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -78,13 +78,7 @@ class Settings(BaseSettings):
     seal_key_id: str = "apaar-verify-2024-01"
 
     # ------------------------------------------------------------- security
-    #: ``NoDecode`` stops pydantic-settings from trying to JSON-parse the
-    #: environment variable, so a plain comma-separated list works.
-    #:
-    #: The list is empty by default, which means the allowed origins are
-    #: exactly ``FRONTEND_ORIGIN`` - the only origin a deployment needs. The
-    #: local development origins are added in development only.
-    cors_origins: Annotated[List[str], NoDecode] = []
+    cors_origins: str = ""
     rate_limit_per_minute: int = 60
     upload_max_size_mb: int = 10
     bcrypt_rounds: int = 12
@@ -127,13 +121,6 @@ class Settings(BaseSettings):
                 values = {**values, "environment": alias}
         return values
 
-    @field_validator("cors_origins", mode="before")
-    @classmethod
-    def _split_origins(cls, value):
-        if isinstance(value, str):
-            return [item.strip() for item in value.split(",") if item.strip()]
-        return value
-
     @model_validator(mode="after")
     def _cors_is_derived_from_the_frontend_origin(self) -> "Settings":
         """Keep the CORS list in step with ``FRONTEND_ORIGIN``.
@@ -148,9 +135,14 @@ class Settings(BaseSettings):
         development the local origins are added so that the Vite dev server
         and the backend can talk to each other.
         """
+        raw = self.cors_origins
+        if isinstance(raw, str):
+            parts = [item.strip() for item in raw.split(",") if item.strip()]
+        else:
+            parts = list(raw)
         origins = [
             origin.strip().rstrip("/")
-            for origin in self.cors_origins
+            for origin in parts
             if origin.strip() and origin.strip() != "*"
         ]
         frontend = self.frontend_origin.strip().rstrip("/")

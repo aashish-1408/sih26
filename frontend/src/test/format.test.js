@@ -44,18 +44,18 @@ describe('formatting', () => {
   })
 
   it('maps a severity to a badge class', () => {
-    expect(severityClass('CRITICAL')).toContain('crimson')
-    expect(severityClass('WARNING')).toContain('mid-blue')
+    expect(severityClass('CRITICAL')).toBe('badge-critical')
+    expect(severityClass('WARNING')).toBe('badge-warning')
   })
 
   it('maps a verification status to a badge class', () => {
-    expect(statusClass('VERIFIED')).toContain('#0A6B3D')
-    expect(statusClass('FLAGGED_ANOMALY')).toContain('crimson')
+    expect(statusClass('VERIFIED')).toBe('badge-success')
+    expect(statusClass('FLAGGED_ANOMALY')).toBe('badge-critical')
   })
 
   it('maps a risk band to a badge class', () => {
-    expect(riskClass('CRITICAL')).toContain('crimson')
-    expect(riskClass('LOW')).toContain('#0A6B3D')
+    expect(riskClass('CRITICAL')).toBe('badge-critical')
+    expect(riskClass('LOW')).toBe('badge-success')
   })
 })
 
