@@ -112,14 +112,9 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
 
-      - name: Build the image
-        run: docker build -f backend/Dockerfile -t veriducate:${{ github.sha }} .
-
       - name: Start MongoDB and the API
         run: |
-          docker compose up -d mongodb
-          # The image is built above, so compose is pointed at it.
-          docker compose up -d --no-build api || true
+          docker compose up -d --build
           for attempt in $(seq 1 40); do
             if curl -fsS http://localhost:8000/health; then
               echo ""
