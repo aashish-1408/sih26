@@ -59,7 +59,7 @@ INSTITUTIONS = [
 ]
 
 PROGRAMMES = [
-    ("BTECH_CSE", "B.Tech Computer Science & Engineering", "UG", 120, 6, 18, 6, 12),
+    ("BTECH_CSE", "B.Tech Computer Science & Engineering", "UG", 60, 3, 9, 3, 6),
     ("BTECH_ECE", "B.Tech Electronics & Communication", "UG", 60, 3, 9, 3, 6),
     ("BTECH_MECH", "B.Tech Mechanical Engineering", "UG", 60, 3, 9, 3, 6),
     ("BTECH_CIVIL", "B.Tech Civil Engineering", "UG", 60, 3, 9, 3, 6),
@@ -226,12 +226,16 @@ async def seed(student_count: int = 2219, reset: bool = True) -> dict:
     scale = max(student_count, 1) / 0.92 / max(base_total, 1)
 
     programmes: list[dict[str, Any]] = []
-    for institution, row in slots:
+    for slot_idx, (institution, row) in enumerate(slots):
         approved = max(int(row[3] * scale), 5)
         nri = max(int(row[4] * scale), 0)
         oci_fn = max(int(row[5] * scale), 0)
         tfw = max(int(row[6] * scale), 0)
         pmsss = max(int(row[7] * scale), 0)
+        # Demo breach: BTECH_CSE at INST-0421 (slot 0) gets exactly 60 approved
+        if slot_idx == 0:
+            approved = 60
+            nri, oci_fn, tfw, pmsss = 3, 9, 3, 6
         programmes.append(
             {
                 "institution_id": institution["institution_id"],
@@ -321,11 +325,17 @@ async def seed(student_count: int = 2219, reset: bool = True) -> dict:
 
     # Two programmes are deliberately over-admitted so that the dashboard shows
     # a live breach; every other programme sits inside its caps.
+    # BTECH_CSE at INST-0421 (slot 0) gets exactly 62 vs 60 for the demo talking point.
+    # We set 54 here because 8 additional students are planted later for anomaly demos.
     breach_slots = {0, len(programmes) // 3}
     for slot_index, programme in enumerate(programmes):
-        fill = 1.06 if slot_index in breach_slots else rng.uniform(0.86, 0.95)
-
-        regular_target = int(round(programme["approved_intake"] * fill))
+        if slot_index == 0:
+            # Demo breach: 54 + 8 planted = 62 regular students vs 60 approved
+            regular_target = 54
+        elif slot_index in breach_slots:
+            regular_target = int(round(programme["approved_intake"] * 1.033))
+        else:
+            regular_target = int(round(programme["approved_intake"] * rng.uniform(0.86, 0.95)))
         # The regular seats are split into merit, management and PMSSS. PMSSS is
         # capped per course by the AICTE Approval Process Handbook.
         pmsss = min(max(programme["max_pmsss"], 0), int(regular_target * 0.15))
