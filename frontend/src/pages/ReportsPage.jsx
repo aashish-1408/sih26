@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import PageHeader from '../components/layout/PageHeader'
 import { Card, ErrorState, Spinner } from '../components/common'
 import { useApi } from '../hooks/useApi'
 import { API_BASE, api } from '../services/api'
@@ -75,10 +74,10 @@ export default function ReportsPage() {
 
   return (
     <>
-      <PageHeader
-        title="Regulatory reports"
-        lead="Download the registers the AICTE Directorate and the regional offices ask for. Every export is written to the audit trail."
-      />
+      <div className="page-header">
+        <h1 className="page-title">Regulatory Reports</h1>
+        <p className="page-subtitle">Download the registers the AICTE Directorate and the regional offices ask for. Every export is written to the audit trail.</p>
+      </div>
 
       {error && <ErrorState message={error} />}
 
@@ -91,7 +90,7 @@ export default function ReportsPage() {
               </span>
               <button
                 type="button"
-                className="btn btn-navy"
+                className="btn btn-primary"
                 onClick={() => download(report)}
                 disabled={busy === report.path}
               >

@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Zone 2 — Access, API &amp; Request Control | Veriducate</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background: #FFFFFF;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #424242;
+  }
+
+  .canvas {
+    width: 1920px;
+    height: 1080px;
+    position: relative;
+    padding: 36px 48px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+  }
+
+  .header-left .zone-tag {
+    display: inline-block;
+    background: #3F51B5;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 4px 14px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .header-left h1 {
+    font-size: 30px;
+    font-weight: 800;
+    color: #1A237E;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+  }
+
+  .header-left .subtitle {
+    font-size: 13px;
+    color: #5C6BC0;
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    background: #F5F5FA;
+    border: 1px solid #C5CAE9;
+    border-radius: 8px;
+    padding: 10px 20px;
+    flex-shrink: 0;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #424242;
+  }
+
+  .legend-swatch {
+    width: 36px;
+    height: 16px;
+    border-radius: 3px;
+  }
+
+  .legend-swatch.existing {
+    border: 2.5px solid #3F51B5;
+    background: #E8EAF6;
+  }
+
+  .legend-swatch.proposed {
+    border: 2.5px dashed #7C4DFF;
+    background: #EDE7F6;
+  }
+
+  .legend-swatch.future {
+    border: 2.5px dashed #BDBDBD;
+    background: #FAFAFA;
+  }
+
+  /* ── Main Layout ── */
+  .main {
+    flex: 1;
+    display: flex;
+    gap: 28px;
+    min-height: 0;
+  }
+
+  /* ── Left Column: Entry + Request Controls ── */
+  .col-left {
+    width: 300px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ── Center Column: Security Boundary ── */
+  .col-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  /* ── Right Column: Backend Monolith ── */
+  .col-right {
+    width: 360px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: #E8EAF6;
+    border: 2px solid #3F51B5;
+    border-radius: 10px;
+    padding: 18px 20px;
+    position: relative;
+  }
+
+  .card.proposed {
+    border-style: dashed;
+    border-color: #7C4DFF;
+    background: #EDE7F6;
+  }
+
+  .card.future {
+    border: 2px dashed #BDBDBD;
+    background: #FAFAFA;
+  }
+
+  .card-badge {
+    position: absolute;
+    top: -10px;
+    right: 16px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 2px 10px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  .card-badge.existing {
+    background: #3F51B5;
+    color: #fff;
+  }
+
+  .card-badge.proposed-badge {
+    background: #7C4DFF;
+    color: #fff;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .card-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .card-icon.indigo { background: #3F51B5; color: #fff; }
+  .card-icon.violet { background: #7C4DFF; color: #fff; }
+  .card-icon.dark   { background: #1A237E; color: #fff; }
+  .card-icon.slate  { background: #546E7A; color: #fff; }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1A237E;
+    line-height: 1.2;
+  }
+
+  .card-desc {
+    font-size: 11.5px;
+    color: #424242;
+    line-height: 1.5;
+  }
+
+  .card-tech {
+    font-size: 10.5px;
+    color: #5C6BC0;
+    font-weight: 500;
+    margin-top: 4px;
+  }
+
+  .bullet-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 6px;
+  }
+
+  .bullet-list li {
+    font-size: 11.5px;
+    color: #424242;
+    padding: 2px 0 2px 14px;
+    position: relative;
+    line-height: 1.45;
+  }
+
+  .bullet-list li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #3F51B5;
+    font-weight: 700;
+  }
+
+  /* ── Security Boundary ── */
+  .security-boundary {
+    flex: 1;
+    border: 2.5px solid #3F51B5;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #E8EAF6 0%, #F0F0FA 100%);
+    padding: 18px 24px 16px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .security-boundary-label {
+    position: absolute;
+    top: -13px;
+    left: 24px;
+    background: #3F51B5;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 16px;
+    border-radius: 5px;
+    letter-spacing: 0.5px;
+  }
+
+  .auth-chain {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin-top: 10px;
+  }
+
+  .auth-step {
+    width: 100%;
+    max-width: 680px;
+    background: #fff;
+    border: 2px solid #5C6BC0;
+    border-radius: 8px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+  }
+
+  .auth-step .step-num {
+    width: 28px;
+    height: 28px;
+    background: #3F51B5;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .auth-step .step-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    width: 26px;
+    text-align: center;
+  }
+
+  .auth-step .step-content {
+    flex: 1;
+  }
+
+  .auth-step .step-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #1A237E;
+  }
+
+  .auth-step .step-detail {
+    font-size: 11px;
+    color: #5C6BC0;
+    margin-top: 1px;
+    font-weight: 500;
+  }
+
+  .auth-step .step-tags {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+
+  .auth-step .step-tag {
+    font-size: 10px;
+    background: #E8EAF6;
+    color: #303F9F;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+
+  .chain-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 22px;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .chain-arrow .arrow-line {
+    width: 2px;
+    height: 12px;
+    background: #3F51B5;
+  }
+
+  .chain-arrow .arrow-head {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #3F51B5;
+  }
+
+  .auth-result {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 4px;
+    padding: 8px;
+  }
+
+  .auth-result .checkmark {
+    width: 32px;
+    height: 32px;
+    background: #2E7D32;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .auth-result .result-text {
+    font-size: 13px;
+    font-weight: 700;
+    color: #2E7D32;
+  }
+
+  .security-note {
+    text-align: center;
+    font-size: 10.5px;
+    color: #7986CB;
+    font-weight: 600;
+    margin-top: 6px;
+    font-style: italic;
+  }
+
+  /* ── Backend Monolith ── */
+  .monolith {
+    flex: 1;
+    border: 2.5px solid #303F9F;
+    border-radius: 12px;
+    background: #E8EAF6;
+    padding: 18px 20px 14px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .monolith-label {
+    position: absolute;
+    top: -13px;
+    left: 20px;
+    background: #303F9F;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 14px;
+    border-radius: 5px;
+    letter-spacing: 0.3px;
+  }
+
+  .monolith-tech {
+    font-size: 11px;
+    color: #5C6BC0;
+    font-weight: 500;
+    margin-top: 6px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+
+  .monolith-stack {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .stack-layer {
+    width: 100%;
+    max-width: 280px;
+    text-align: center;
+    padding: 14px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #1A237E;
+    position: relative;
+  }
+
+  .stack-layer.routers  { background: #C5CAE9; border: 2px solid #5C6BC0; }
+  .stack-layer.services { background: #9FA8DA; border: 2px solid #3F51B5; color: #fff; }
+  .stack-layer.repos    { background: #7986CB; border: 2px solid #303F9F; color: #fff; }
+  .stack-layer.db       { background: #303F9F; border: 2px solid #1A237E; color: #fff; border-radius: 8px 8px 20px 20px; }
+
+  .stack-layer .layer-sub {
+    font-size: 10px;
+    font-weight: 500;
+    opacity: 0.85;
+    margin-top: 2px;
+  }
+
+  .stack-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 24px;
+    justify-content: center;
+  }
+
+  .stack-arrow .sa-line {
+    width: 2px;
+    height: 14px;
+    background: #303F9F;
+  }
+
+  .stack-arrow .sa-head {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #303F9F;
+  }
+
+  .stack-arrow-label {
+    font-size: 9.5px;
+    color: #5C6BC0;
+    font-weight: 600;
+    text-align: center;
+    margin-top: -2px;
+    margin-bottom: -2px;
+  }
+
+  .monolith-note {
+    text-align: center;
+    font-size: 10.5px;
+    color: #7986CB;
+    font-weight: 600;
+    font-style: italic;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #C5CAE9;
+  }
+
+  /* ── Flow Arrows (horizontal) ── */
+  .flow-connector {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .flow-h-line {
+    height: 2px;
+    background: #3F51B5;
+  }
+
+  .flow-h-arrow {
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 8px solid #3F51B5;
+  }
+
+  .flow-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #3F51B5;
+    white-space: nowrap;
+  }
+
+  /* ── Incoming/Outgoing Zone Labels ── */
+  .zone-edge {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .zone-edge .edge-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #9E9E9E;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .zone-edge .edge-arrow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* ── RBAC Sidebar ── */
+  .rbac-card {
+    background: #fff;
+    border: 2px solid #3F51B5;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-top: 12px;
+  }
+
+  .rbac-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .rbac-header .rbac-icon {
+    font-size: 18px;
+  }
+
+  .rbac-header .rbac-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1A237E;
+  }
+
+  .role-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 6px;
+  }
+
+  .role-chip {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: #C5CAE9;
+    color: #1A237E;
+  }
+
+  .rbac-note {
+    font-size: 10px;
+    color: #7986CB;
+    font-style: italic;
+    margin-top: 8px;
+    font-weight: 500;
+  }
+
+  /* ── Horizontal Connector Overlays ── */
+  .h-connector-left {
+    position: absolute;
+    left: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .h-connector-right {
+    position: absolute;
+    right: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  /* ── Entry Arrows ── */
+  .entry-zone {
+    position: absolute;
+    left: 0;
+    top: 370px;
+    width: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .entry-zone .ez-label {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-size: 10px;
+    font-weight: 700;
+    color: #9E9E9E;
+    letter-spacing: 1px;
+    transform: rotate(180deg);
+  }
+
+  .exit-zone {
+    position: absolute;
+    right: 0;
+    top: 370px;
+    width: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .exit-zone .ez-label {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-size: 10px;
+    font-weight: 700;
+    color: #9E9E9E;
+    letter-spacing: 1px;
+  }
+
+  /* ── Connector between columns ── */
+  .inter-col-arrow {
+    position: absolute;
+    display: flex;
+    align-items: center;
+  }
+
+  .inter-col-arrow .ica-line {
+    height: 2.5px;
+    flex: 1;
+  }
+
+  .inter-col-arrow .ica-line.solid { background: #3F51B5; }
+  .inter-col-arrow .ica-line.dashed { background: repeating-linear-gradient(90deg, #7C4DFF 0, #7C4DFF 6px, transparent 6px, transparent 12px); height: 2.5px; }
+
+  .inter-col-arrow .ica-head {
+    width: 0;
+    height: 0;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    flex-shrink: 0;
+  }
+
+  .inter-col-arrow .ica-head.right { border-left: 10px solid #3F51B5; }
+
+  .inter-col-arrow .ica-label {
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+    padding: 0 6px;
+  }
+
+  .inter-col-arrow .ica-label.indigo { color: #3F51B5; }
+
+  /* ── Absolute positioned connectors ── */
+  .abs-arrow {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .abs-arrow svg { overflow: visible; }
+
+  /* ── Footer ── */
+  .footer {
+    flex-shrink: 0;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1.5px solid #E0E0E0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-left {
+    font-size: 11px;
+    color: #9E9E9E;
+    font-weight: 500;
+  }
+
+  .footer-right {
+    font-size: 11px;
+    color: #3F51B5;
+    font-weight: 600;
+  }
+
+  /* ── Three-column layout ── */
+  .three-col {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 310px 1fr 370px;
+    gap: 24px;
+    min-height: 0;
+    position: relative;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 0;
+  }
+
+  /* ── Horizontal flow arrows between columns ── */
+  .flow-arrows-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .harrow {
+    position: absolute;
+    display: flex;
+    align-items: center;
+  }
+
+  .harrow-line {
+    flex: 1;
+    height: 2.5px;
+    background: #3F51B5;
+    position: relative;
+  }
+
+  .harrow-line.dashed {
+    background: none;
+    border-top: 2.5px dashed #7C4DFF;
+    height: 0;
+  }
+
+  .harrow-head {
+    width: 0; height: 0;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    border-left: 10px solid #3F51B5;
+    flex-shrink: 0;
+  }
+
+  .harrow-label {
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9.5px;
+    font-weight: 600;
+    color: #3F51B5;
+    white-space: nowrap;
+    background: #fff;
+    padding: 0 4px;
+  }
+
+  .harrow-label.violet { color: #7C4DFF; }
+
+  /* ── Zone edge labels ── */
+  .zone-in, .zone-out {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .zone-in {
+    left: -38px;
+  }
+
+  .zone-out {
+    right: -38px;
+  }
+
+  .zone-in-label, .zone-out-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: #BDBDBD;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+  .zone-in-label { transform: rotate(180deg); }
+</style>
+</head>
+<body>
+<div class="canvas">
+
+  <!-- ════════ HEADER ════════ -->
+  <div class="header">
+    <div class="header-left">
+      <span class="zone-tag">Zone 2 of 6</span>
+      <h1>ACCESS, API &amp; REQUEST CONTROL</h1>
+      <div class="subtitle">Veriducate — Academic Admission Compliance &amp; Credential Verification Platform &nbsp;|&nbsp; Smart India Hackathon 2026 &nbsp;|&nbsp; SIH26263</div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-swatch existing"></div>EXISTING (implemented)</div>
+      <div class="legend-item"><div class="legend-swatch proposed"></div>PROPOSED P0 / P1</div>
+      <div class="legend-item"><div class="legend-swatch future"></div>FUTURE P2</div>
+    </div>
+  </div>
+
+  <!-- ════════ MAIN THREE-COLUMN LAYOUT ════════ -->
+  <div class="three-col">
+
+    <!-- ── Zone edge: FROM ZONE 1 ── -->
+    <div class="zone-in" style="top:44%;">
+      <div class="zone-in-label">FROM ZONE 1 &nbsp; CLIENTS</div>
+    </div>
+
+    <!-- ── Zone edge: TO ZONE 3 ── -->
+    <div class="zone-out" style="top:44%;">
+      <div class="zone-out-label">TO ZONE 3 &nbsp; SERVICES</div>
+    </div>
+
+    <!-- ════ COLUMN 1: Entry + Request Controls ════ -->
+    <div class="col">
+
+      <!-- A — HTTPS / API Entry -->
+      <div class="card" style="flex: 0 0 auto;">
+        <span class="card-badge existing">EXISTING</span>
+        <div class="card-header">
+          <div class="card-icon indigo">&#9741;</div>
+          <div class="card-title">HTTPS / API Entry</div>
+        </div>
+        <div class="card-desc">Receives requests &middot; routes to FastAPI &middot; returns responses</div>
+        <div class="card-tech">TLS termination &middot; RFC 7231</div>
+      </div>
+
+      <!-- Optional Reverse Proxy -->
+      <div class="card proposed" style="flex: 0 0 auto;">
+        <span class="card-badge proposed-badge">PROPOSED</span>
+        <div class="card-header">
+          <div class="card-icon violet">&#8645;</div>
+          <div class="card-title">Reverse Proxy / LB</div>
+        </div>
+        <div class="card-desc">Optional load balancer for scaled deployment</div>
+        <div class="card-tech">Nginx / Caddy — proposed infrastructure</div>
+      </div>
+
+      <!-- B — Request Controls -->
+      <div class="card proposed" style="flex: 1 1 auto;">
+        <span class="card-badge proposed-badge">PROPOSED</span>
+        <div class="card-header">
+          <div class="card-icon violet">&#9881;</div>
+          <div class="card-title">Request Controls</div>
+        </div>
+        <ul class="bullet-list">
+          <li>Rate limiting</li>
+          <li>Request validation</li>
+          <li>Max upload size</li>
+          <li>Max bulk batch size</li>
+          <li>Controlled error responses</li>
+          <li>Authorize before returning sensitive data</li>
+        </ul>
+        <div class="card-tech">Middleware hardening &middot; verify existing impl.</div>
+      </div>
+
+      <!-- RBAC Summary -->
+      <div class="rbac-card" style="flex: 0 0 auto;">
+        <span class="card-badge existing" style="right: 10px;">EXISTING</span>
+        <div class="rbac-header">
+          <span class="rbac-icon">&#128737;</span>
+          <span class="rbac-title">RBAC + Institution-Level Data Isolation</span>
+        </div>
+        <div class="role-chips">
+          <span class="role-chip">aicte_admin</span>
+          <span class="role-chip">institution_admin</span>
+          <span class="role-chip">verifier</span>
+          <span class="role-chip">student</span>
+        </div>
+        <div class="rbac-note">UI checks only — server enforces</div>
+      </div>
+
+    </div>
+
+    <!-- ════ COLUMN 2: Security Boundary ════ -->
+    <div class="col">
+      <div class="security-boundary">
+        <span class="security-boundary-label">&#128274;&ensp;Security Boundary — Protected Backend&ensp;&ensp;EXISTING</span>
+
+        <div class="auth-chain">
+
+          <!-- Step 1 — Token Validation -->
+          <div class="auth-step">
+            <span class="step-num">1</span>
+            <span class="step-icon">&#128274;</span>
+            <div class="step-content">
+              <div class="step-title">Token Validation</div>
+              <div class="step-detail">Authenticate every incoming request</div>
+              <div class="step-tags">
+                <span class="step-tag">JWT</span>
+                <span class="step-tag">bcrypt</span>
+                <span class="step-tag">Google OAuth*</span>
+                <span class="step-tag">API key</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="chain-arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+          <!-- Step 2 — Principal & Role Resolution -->
+          <div class="auth-step">
+            <span class="step-num">2</span>
+            <span class="step-icon">&#128100;</span>
+            <div class="step-content">
+              <div class="step-title">Principal &amp; Role Resolution</div>
+              <div class="step-detail">who is calling &middot; which role</div>
+            </div>
+          </div>
+
+          <div class="chain-arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+          <!-- Step 3 — Permission Enforcement -->
+          <div class="auth-step">
+            <span class="step-num">3</span>
+            <span class="step-icon">&#9989;</span>
+            <div class="step-content">
+              <div class="step-title">Permission Enforcement</div>
+              <div class="step-tags">
+                <span class="step-tag">aicte_admin</span>
+                <span class="step-tag">institution_admin</span>
+                <span class="step-tag">verifier</span>
+                <span class="step-tag">student</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="chain-arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+          <!-- Step 4 — Institution Scope Enforcement -->
+          <div class="auth-step">
+            <span class="step-num">4</span>
+            <span class="step-icon">&#127970;</span>
+            <div class="step-content">
+              <div class="step-title">Institution Scope Enforcement</div>
+              <div class="step-detail" style="font-family: monospace; font-size: 11px; color: #303F9F;">principal.require_scope(...)</div>
+            </div>
+          </div>
+
+          <div class="chain-arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+          <!-- Step 5 — Authorized API Operation -->
+          <div class="auth-step" style="border-color: #2E7D32; background: #E8F5E9;">
+            <span class="step-num" style="background: #2E7D32;">5</span>
+            <span class="step-icon">&#128640;</span>
+            <div class="step-content">
+              <div class="step-title" style="color: #1B5E20;">Authorized API Operation</div>
+              <div class="step-detail" style="color: #388E3C;">Request proceeds to business services</div>
+            </div>
+          </div>
+
+          <!-- Result -->
+          <div class="auth-result">
+            <div class="checkmark">&#10003;</div>
+            <div class="result-text">authorized</div>
+          </div>
+
+        </div>
+
+        <div class="security-note">Server is the enforcement point; UI checks are not security</div>
+        <div style="text-align:center; font-size:10px; color:#9FA8DA; margin-top:2px;">* Google OAuth where configured</div>
+
+      </div>
+    </div>
+
+    <!-- ════ COLUMN 3: Backend Monolith ════ -->
+    <div class="col">
+      <div class="monolith">
+        <span class="monolith-label">&#9881;&ensp;Veriducate Backend — Modular Monolith&ensp;&ensp;EXISTING</span>
+        <div class="monolith-tech">Python 3.11+ &nbsp;&middot;&nbsp; FastAPI &nbsp;&middot;&nbsp; Uvicorn</div>
+
+        <div class="monolith-stack">
+
+          <div class="stack-layer routers">
+            API Routers
+            <div class="layer-sub">endpoint definitions &middot; request/response schemas</div>
+          </div>
+
+          <div class="stack-arrow"><div class="sa-line"></div><div class="sa-head"></div></div>
+          <div class="stack-arrow-label">→ routers → services</div>
+
+          <div class="stack-layer services">
+            Business Services
+            <div class="layer-sub">domain logic &middot; validation &middot; orchestration</div>
+          </div>
+
+          <div class="stack-arrow"><div class="sa-line"></div><div class="sa-head"></div></div>
+
+          <div class="stack-layer repos">
+            Repositories
+            <div class="layer-sub">data access &middot; query building &middot; scope filtering</div>
+          </div>
+
+          <div class="stack-arrow"><div class="sa-line"></div><div class="sa-head"></div></div>
+
+          <div class="stack-layer db">
+            &#128451; MongoDB (primary store)
+            <div class="layer-sub">Motor async driver &middot; repository pattern</div>
+          </div>
+
+        </div>
+
+        <div class="monolith-note">Routers never access MongoDB directly</div>
+      </div>
+
+      <!-- Connection note cards -->
+      <div style="display: flex; gap: 10px;">
+        <div style="flex:1; background: #E8F5E9; border: 1.5px solid #66BB6A; border-radius: 8px; padding: 10px 14px;">
+          <div style="font-size: 11px; font-weight: 700; color: #2E7D32; margin-bottom: 4px;">&#8594; To Zone 3</div>
+          <div style="font-size: 10px; color: #424242;">Authorized requests flow into Core Business Services</div>
+        </div>
+        <div style="flex:1; background: #E8F5E9; border: 1.5px solid #66BB6A; border-radius: 8px; padding: 10px 14px;">
+          <div style="font-size: 11px; font-weight: 700; color: #2E7D32; margin-bottom: 4px;">&#8595; To Zone 5</div>
+          <div style="font-size: 10px; color: #424242;">Repositories write to MongoDB via controlled access</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ════ FLOW ARROWS OVERLAY ════ -->
+    <div class="flow-arrows-overlay">
+
+      <!-- Arrow: Zone 1 → API Entry (left edge to col 1) -->
+      <svg style="position:absolute; left:-8px; top: 100px; width: 60px; height: 40px;">
+        <defs><marker id="ah1" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#3F51B5"/></marker></defs>
+        <line x1="0" y1="20" x2="48" y2="20" stroke="#3F51B5" stroke-width="2.5" marker-end="url(#ah1)"/>
+        <text x="24" y="12" text-anchor="middle" font-size="9" fill="#3F51B5" font-weight="600" font-family="Inter, sans-serif">Client Request</text>
+      </svg>
+
+      <!-- Arrow: Col 1 bottom → Col 2 Security Boundary -->
+      <svg style="position:absolute; left:296px; top: 270px; width: 40px; height: 30px;">
+        <defs><marker id="ah2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#3F51B5"/></marker></defs>
+        <line x1="0" y1="15" x2="28" y2="15" stroke="#3F51B5" stroke-width="2.5" marker-end="url(#ah2)"/>
+      </svg>
+
+      <!-- Arrow: Security Boundary → Col 3 Backend -->
+      <svg style="position:absolute; right: 382px; top: 320px; width: 40px; height: 30px;">
+        <defs><marker id="ah3" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#3F51B5"/></marker></defs>
+        <line x1="0" y1="15" x2="28" y2="15" stroke="#3F51B5" stroke-width="2.5" marker-end="url(#ah3)"/>
+        <text x="14" y="8" text-anchor="middle" font-size="8.5" fill="#3F51B5" font-weight="600" font-family="Inter, sans-serif">Authorized</text>
+      </svg>
+
+    </div>
+
+  </div>
+
+  <!-- ════════ FOOTER ════════ -->
+  <div class="footer">
+    <div class="footer-left">Veriducate System Architecture &nbsp;&middot;&nbsp; Zone 2 of 6 &nbsp;&middot;&nbsp; Access, API &amp; Request Control</div>
+    <div class="footer-right">Smart India Hackathon 2026 &nbsp;|&nbsp; SIH26263</div>
+  </div>
+
+</div>
+</body>
+</html>

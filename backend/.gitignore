@@ -1,4 +1,4 @@
-# EduSynC - Python build artefacts
+# Veriducate - Python build artefacts
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -20,7 +20,7 @@ htmlcov/
 .env
 *.db
 *.sqlite3
-edusync.db
+veriducate.db
 
 # Editors
 .idea/

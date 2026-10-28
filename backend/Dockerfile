@@ -1,4 +1,4 @@
-# EduSynC - APAAR ID Student Data Management & Verification Platform
+# Veriducate - APAAR ID Student Data Management & Verification Platform
 #
 # Two stages:
 #   1. build the React frontend with Vite;
@@ -31,7 +31,7 @@ RUN apt-get update \
     && apt-get install --no-install-recommends -y build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-COPY edusync/requirements.txt .
+COPY backend/requirements.txt .
 RUN python -m venv /opt/venv \
     && /opt/venv/bin/pip install --upgrade pip \
     && /opt/venv/bin/pip install -r requirements.txt
@@ -45,20 +45,20 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PATH="/opt/venv/bin:$PATH" \
     ENVIRONMENT=dev \
     MONGODB_URL=mongodb://mongodb:27017 \
-    MONGODB_DATABASE=edusync
+    MONGODB_DATABASE=veriducate
 
 RUN apt-get update \
     && apt-get install --no-install-recommends -y libpq5 curl \
     && rm -rf /var/lib/apt/lists/* \
-    && useradd --create-home --uid 10001 edusync
+    && useradd --create-home --uid 10001 veriducate
 
 COPY --from=backend /opt/venv /opt/venv
 
 WORKDIR /app
-COPY --chown=edusync:edusync edusync/app ./app
-COPY --from=frontend --chown=edusync:edusync /build/dist /app/frontend/dist
+COPY --chown=veriducate:veriducate backend/app ./app
+COPY --from=frontend --chown=veriducate:veriducate /build/dist /app/frontend/dist
 
-USER edusync
+USER veriducate
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \

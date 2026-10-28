@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import PageHeader from '../components/layout/PageHeader'
 import { Card, EmptyState, ErrorState, FilterBar, Spinner } from '../components/common'
 import { useApi } from '../hooks/useApi'
 import { api } from '../services/api'
@@ -24,10 +23,10 @@ export default function InstitutionsPage() {
 
   return (
     <>
-      <PageHeader
-        title="Institutions"
-        lead="Every AICTE-approved institution in the registry, together with the sanctioned capacity of each programme."
-      />
+      <div className="page-header">
+        <h1 className="page-title">Institutions</h1>
+        <p className="page-subtitle">Every AICTE-approved institution in the registry, together with the sanctioned capacity of each programme.</p>
+      </div>
 
       <FilterBar>
         <div className="w-64">
@@ -71,7 +70,7 @@ export default function InstitutionsPage() {
                       className="cursor-pointer"
                     >
                       <td>
-                        <p className="m-0 font-semibold text-navy">{row.name}</p>
+                        <p className="m-0 font-semibold text-brand-text">{row.name}</p>
                         <p className="m-0 text-xs text-muted">{row.institution_id}</p>
                       </td>
                       <td>{row.state}</td>
@@ -113,7 +112,7 @@ export default function InstitutionsPage() {
                   {programmes.map((row) => (
                     <tr key={`${row.institution_id}-${row.program_id}-${row.academic_year}`}>
                       <td>
-                        <p className="m-0 font-semibold text-navy">{row.program_name}</p>
+                        <p className="m-0 font-semibold text-brand-text">{row.program_name}</p>
                         <p className="m-0 text-xs text-muted">
                           {row.program_id} &middot; {row.academic_year}
                         </p>

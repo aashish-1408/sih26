@@ -94,7 +94,7 @@ i18n
     interpolation: { escapeValue: false },
     detection: {
       order: ['localStorage', 'navigator'],
-      lookupLocalStorage: 'edusync.language',
+      lookupLocalStorage: 'veriducate.language',
       caches: ['localStorage'],
     },
     react: { useSuspense: false },

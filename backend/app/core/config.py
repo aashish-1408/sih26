@@ -16,7 +16,7 @@ from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    """Runtime settings for the EduSynC platform."""
+    """Runtime settings for the Veriducate platform."""
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     )
 
     # ------------------------------------------------------------- identity
-    app_name: str = "EduSynC"
+    app_name: str = "Veriducate"
     environment: str = "dev"
     #: ``ENV`` is accepted as an alias of ``ENVIRONMENT`` because the hosting
     #: platforms set ``ENV`` by convention. ``ENVIRONMENT`` still wins when
@@ -40,7 +40,7 @@ class Settings(BaseSettings):
 
     # ------------------------------------------------------------- database
     mongodb_url: str = ""
-    mongodb_database: str = "edusync"
+    mongodb_database: str = "veriducate"
     mongodb_timeout_ms: int = 5000
     #: Key used to derive the privacy-preserving match token of an APAAR ID.
     #: An empty value falls back to the seal key.
@@ -105,7 +105,7 @@ class Settings(BaseSettings):
     google_scopes: List[str] = ["openid", "email", "profile"]
 
     # -------------------------------------------------------------- session
-    session_cookie_name: str = "edusync_session"
+    session_cookie_name: str = "veriducate_session"
     session_max_age: int = 60 * 60 * 8
 
     # ----------------------------------------------------------- demo data

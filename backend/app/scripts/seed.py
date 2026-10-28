@@ -1,4 +1,4 @@
-"""Seed the EduSynC registry with a synthetic pan-India dataset.
+"""Seed the Veriducate registry with a synthetic pan-India dataset.
 
 The dataset is **entirely synthetic**: no real student, institution or APAAR
 identifier is used. It is designed to exercise every detection layer so the
@@ -92,7 +92,7 @@ STATES = [
 ]
 
 DEMO_USERS = [
-    ("aicte.admin@edusync.gov.in", "Dr. Ananya Iyer", "aicte_admin", None),
+    ("aicte.admin@veriducate.gov.in", "Dr. Ananya Iyer", "aicte_admin", None),
     ("principal@vidyavikas.edu.in", "Prof. Ramesh Kulkarni", "institution_admin", "INST-0421"),
     ("principal@bhartiya.edu.in", "Prof. Sunil Mehta", "institution_admin", "INST-0422"),
     ("verifier@acme-corp.com", "Maya Krishnan", "verifier", None),
@@ -549,7 +549,7 @@ async def seed(student_count: int = 2219, reset: bool = True) -> dict:
     # -------------------------------------------- recompute the anomalies
     anomalies = await recompute_anomalies(db)
 
-    api_key_plain, api_key_hash = generate_api_key("edusync")
+    api_key_plain, api_key_hash = generate_api_key("veriducate")
     await db["api_keys"].insert_one(
         {
             "key_id": "KEY-DEMO-001",
@@ -739,7 +739,7 @@ async def _seed_impact_scenarios(
 
 
 async def main() -> None:
-    parser = argparse.ArgumentParser(description="Seed the EduSynC registry.")
+    parser = argparse.ArgumentParser(description="Seed the Veriducate registry.")
     parser.add_argument("--students", type=int, default=2219)
     parser.add_argument("--no-reset", action="store_true")
     args = parser.parse_args()
@@ -754,7 +754,7 @@ async def main() -> None:
         )
 
     summary = await seed(student_count=args.students, reset=not args.no_reset)
-    print("EduSynC demo data seeded:")
+    print("Veriducate demo data seeded:")
     for key, value in summary.items():
         if key == "scenarios":
             print("  scenarios:")

@@ -1,4 +1,3 @@
-/** Formatting helpers shared by the pages. */
 import i18n, { LANGUAGE_BY_CODE } from '../i18n'
 
 function activeLocale() {
@@ -39,8 +38,6 @@ export function formatDateTime(value) {
 }
 
 export function formatApaar(value) {
-  // APAAR IDs are identifiers, not display data. No web screen may reveal one
-  // in full: only a masked form is ever returned to the view or to TTS.
   return maskApaar(value)
 }
 
@@ -50,7 +47,6 @@ export function maskApaar(value) {
   return `${digits.slice(0, 4)} **** ****`
 }
 
-/** A readable label for a quota code. */
 export const QUOTA_LABELS = {
   REGULAR_MERIT: 'Merit',
   MANAGEMENT: 'Management',
@@ -82,40 +78,39 @@ export function anomalyLabel(code) {
   return ANOMALY_LABELS[code] || code || '-'
 }
 
-/** Tailwind classes for a severity badge. */
 export function severityClass(severity) {
   switch (severity) {
     case 'CRITICAL':
-      return 'bg-[#FDE7E7] text-crimson'
+      return 'badge-critical'
     case 'HIGH':
-      return 'bg-[#FEF3DC] text-[#96650A]'
+      return 'badge-high'
     case 'WARNING':
-      return 'bg-[#E7EFFC] text-mid-blue'
+      return 'badge-warning'
     default:
-      return 'bg-[#EDF1F6] text-muted'
+      return 'badge-neutral'
   }
 }
 
 export function statusClass(status) {
   switch (status) {
     case 'VERIFIED':
-      return 'bg-[#E2F6EC] text-[#0A6B3D]'
+      return 'badge-success'
     case 'FLAGGED_ANOMALY':
-      return 'bg-[#FDE7E7] text-crimson'
+      return 'badge-critical'
     default:
-      return 'bg-[#FEF3DC] text-[#96650A]'
+      return 'badge-warning'
   }
 }
 
 export function riskClass(band) {
   switch (band) {
     case 'CRITICAL':
-      return 'bg-crimson text-white'
+      return 'badge-critical'
     case 'HIGH':
-      return 'bg-[#FDE7E7] text-crimson'
+      return 'badge-high'
     case 'MEDIUM':
-      return 'bg-[#FEF3DC] text-[#96650A]'
+      return 'badge-warning'
     default:
-      return 'bg-[#E2F6EC] text-[#0A6B3D]'
+      return 'badge-success'
   }
 }

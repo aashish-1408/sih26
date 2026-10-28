@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Zone 4 — Async Processing &amp; Case Management | Veriducate</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: #fff; font-family: 'Inter', sans-serif; color: #424242; }
+  .canvas { width: 1920px; height: 1080px; position: relative; padding: 32px 40px; display: flex; flex-direction: column; }
+
+  /* Header */
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+  .header-left { display: flex; align-items: baseline; gap: 18px; }
+  .zone-badge { background: #7B1FA2; color: #fff; font-size: 13px; font-weight: 700; padding: 5px 14px; border-radius: 6px; letter-spacing: 0.5px; white-space: nowrap; }
+  .title { font-size: 26px; font-weight: 700; color: #4A148C; letter-spacing: -0.3px; }
+  .subtitle { font-size: 13px; color: #7E57C2; font-weight: 500; margin-top: 2px; }
+
+  /* Legend */
+  .legend { display: flex; gap: 20px; align-items: center; flex-shrink: 0; background: #FAFAFA; border: 1px solid #E0E0E0; border-radius: 8px; padding: 8px 16px; font-size: 11px; color: #616161; }
+  .legend-item { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .leg-line { width: 32px; height: 0; border-top: 2.5px solid #7B1FA2; }
+  .leg-line.dashed { border-top-style: dashed; }
+  .leg-line.future { border-top: 2.5px dashed #BDBDBD; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+  /* Main layout */
+  .main { flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr; gap: 18px; min-height: 0; }
+
+  /* Containers */
+  .container { border-radius: 10px; padding: 16px 18px; position: relative; }
+  .proposed { border: 2.2px dashed #7B1FA2; background: #F3E5F5; }
+  .proposed-case { border: 2.2px dashed #5E35B1; background: #EDE7F6; }
+  .existing { border: 2.2px solid #5E35B1; background: #EDE7F6; }
+  .mixed { border: 2.2px solid #5E35B1; background: #EDE7F6; }
+
+  .container-title { font-size: 14px; font-weight: 700; color: #4A148C; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .container-title .badge { font-size: 10px; background: #CE93D8; color: #fff; padding: 2px 8px; border-radius: 4px; font-weight: 600; letter-spacing: 0.4px; }
+  .container-title .badge-existing { background: #5E35B1; }
+
+  /* Workflow step markers */
+  .step-marker { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: #7B1FA2; color: #fff; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+
+  /* Sub-boxes */
+  .sub-box { background: #fff; border: 1.5px solid #CE93D8; border-radius: 7px; padding: 10px 13px; margin-bottom: 8px; }
+  .sub-box.dashed { border-style: dashed; }
+  .sub-box-title { font-size: 12px; font-weight: 600; color: #6A1B9A; margin-bottom: 4px; }
+  .sub-box-body { font-size: 11px; color: #555; line-height: 1.55; }
+  .sub-box-note { font-size: 10px; color: #9E9E9E; font-style: italic; margin-top: 3px; }
+
+  /* Flow arrows inside containers */
+  .flow-vertical { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .flow-vertical .arrow-down { width: 2px; height: 14px; background: #7B1FA2; position: relative; margin: 0 auto; }
+  .flow-vertical .arrow-down::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid #7B1FA2; }
+  .flow-vertical .arrow-down.dashed-arr { background: repeating-linear-gradient(to bottom, #7B1FA2 0, #7B1FA2 3px, transparent 3px, transparent 6px); }
+
+  /* State chips */
+  .state-flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin: 6px 0; }
+  .state-chip { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 4px; color: #fff; letter-spacing: 0.3px; }
+  .state-queued { background: #78909C; }
+  .state-running { background: #1976D2; }
+  .state-completed { background: #388E3C; }
+  .state-failed { background: #C62828; }
+  .state-retrying { background: #F57F17; color: #fff; }
+  .state-arrow { font-size: 14px; color: #9575CD; margin: 0 4px; font-weight: 700; }
+
+  /* Horizontal flow connector */
+  .h-flow { display: flex; align-items: center; gap: 0; }
+  .h-arrow { width: 36px; height: 0; border-top: 2px dashed #7B1FA2; position: relative; }
+  .h-arrow::after { content: ''; position: absolute; right: -5px; top: -5px; border-left: 7px solid #7B1FA2; border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+
+  /* Divider */
+  .divider { width: 100%; height: 1px; background: #E1BEE7; margin: 6px 0; }
+
+  /* Section: top-left — Background Processing */
+  .bg-processing { grid-column: 1 / 2; grid-row: 1 / 3; display: flex; flex-direction: column; gap: 12px; }
+  .case-mgmt { grid-column: 2 / 3; grid-row: 1 / 3; display: flex; flex-direction: column; }
+
+  /* Cross-zone labels */
+  .cross-zone { position: absolute; font-size: 10px; color: #9575CD; font-weight: 600; letter-spacing: 0.3px; }
+  .cross-zone.left { left: -6px; top: 50%; transform: translateY(-50%) rotate(-90deg); }
+
+  /* Inline flow rows */
+  .flow-row { display: flex; align-items: stretch; gap: 12px; }
+  .flow-row > * { flex: 1; min-width: 0; }
+
+  /* Edge labels */
+  .edge-label { position: absolute; font-size: 9.5px; color: #7B1FA2; font-weight: 600; background: #fff; padding: 1px 6px; border-radius: 3px; border: 1px dashed #CE93D8; white-space: nowrap; }
+
+  /* Top bar showing incoming flows */
+  .incoming-bar { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; padding: 8px 14px; background: linear-gradient(90deg, #F3E5F5 0%, #EDE7F6 100%); border-radius: 8px; border: 1px dashed #CE93D8; }
+  .incoming-bar .label { font-size: 11px; color: #6A1B9A; font-weight: 600; }
+  .incoming-bar .desc { font-size: 10.5px; color: #757575; }
+  .incoming-bar .arrow-icon { font-size: 16px; color: #7B1FA2; }
+
+  /* Case workflow step */
+  .case-step { display: flex; align-items: center; gap: 10px; padding: 7px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 500; color: #4A148C; }
+  .case-step.existing-step { background: #D1C4E9; border: 1.5px solid #5E35B1; }
+  .case-step.proposed-step { background: #E1BEE7; border: 1.5px dashed #7B1FA2; }
+  .case-step .star { color: #F57F17; font-size: 12px; font-weight: 700; }
+  .case-arrow-down { display: flex; justify-content: center; }
+  .case-arrow-down .arr { width: 2px; height: 10px; background: #7B1FA2; position: relative; }
+  .case-arrow-down .arr::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid #7B1FA2; }
+
+  .note-box { font-size: 10px; color: #757575; font-style: italic; background: #F5F5F5; border: 1px solid #E0E0E0; border-radius: 5px; padding: 6px 10px; margin-top: 6px; line-height: 1.5; }
+
+  /* Status pair */
+  .status-pair { display: flex; gap: 10px; }
+  .status-pair > div { flex: 1; text-align: center; padding: 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+  .status-batch { background: #C8E6C9; color: #2E7D32; border: 1.5px solid #66BB6A; }
+  .status-postcommit { background: #FFF9C4; color: #F57F17; border: 1.5px dashed #FBC02D; }
+
+  /* Footer */
+  .footer { margin-top: auto; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #E0E0E0; }
+  .footer-text { font-size: 10px; color: #BDBDBD; }
+</style>
+</head>
+<body>
+<div class="canvas">
+
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <div class="header-left">
+        <span class="zone-badge">ZONE 4</span>
+        <span class="title">ASYNC PROCESSING &amp; CASE MANAGEMENT</span>
+      </div>
+      <div class="subtitle">Veriducate — Background Job Processing &amp; Review Workflow</div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="leg-line"></div> Existing (implemented)</div>
+      <div class="legend-item"><div class="leg-line dashed"></div> Proposed P0 / P1</div>
+      <div class="legend-item"><div class="leg-line future"></div> Future P2</div>
+      <div class="legend-item"><span style="color:#F57F17;font-weight:700;">*</span> = proposed improvement</div>
+    </div>
+  </div>
+
+  <!-- Incoming flows bar -->
+  <div class="incoming-bar">
+    <span class="arrow-icon">&#x2B9E;</span>
+    <span class="label">From Zone 3:</span>
+    <span class="desc">CSV commit triggers background processing &nbsp;|&nbsp; Anomaly findings flow to case management</span>
+    <span style="flex:1;"></span>
+    <span class="arrow-icon">&#x2B9E;</span>
+    <span class="label">To Zone 5:</span>
+    <span class="desc">Audit records &nbsp;|&nbsp; Persisted job metadata</span>
+    <span style="flex:1;"></span>
+    <span class="arrow-icon" style="transform:rotate(180deg);">&#x2B9E;</span>
+    <span class="label" style="font-size:10px;">From Frontend:</span>
+    <span class="desc">status polling / progress refresh (upload page → job status API)</span>
+  </div>
+
+  <!-- Main 2-column layout -->
+  <div class="main">
+
+    <!-- LEFT COLUMN: Background Processing -->
+    <div class="bg-processing">
+      <div class="container proposed" style="flex:1;display:flex;flex-direction:column;">
+        <div class="container-title">
+          <span class="step-marker">5</span>
+          Background Processing
+          <span class="badge">PROPOSED P0</span>
+        </div>
+
+        <!-- Job Submission -->
+        <div class="sub-box dashed">
+          <div class="sub-box-title">Job Submission</div>
+          <div class="sub-box-body">
+            <div class="flow-row" style="gap:6px;align-items:center;flex-wrap:wrap;">
+              <span style="background:#EDE7F6;padding:3px 8px;border-radius:4px;font-size:10.5px;font-weight:600;color:#4A148C;">validate</span>
+              <span style="color:#7B1FA2;">→</span>
+              <span style="background:#EDE7F6;padding:3px 8px;border-radius:4px;font-size:10.5px;font-weight:600;color:#4A148C;">persist batch/job metadata</span>
+              <span style="color:#7B1FA2;">→</span>
+              <span style="background:#EDE7F6;padding:3px 8px;border-radius:4px;font-size:10.5px;font-weight:600;color:#4A148C;">enqueue</span>
+              <span style="color:#7B1FA2;">→</span>
+              <span style="background:#EDE7F6;padding:3px 8px;border-radius:4px;font-size:10.5px;font-weight:600;color:#4A148C;">return job_id</span>
+            </div>
+            <div class="sub-box-note">(small requests may stay synchronous)</div>
+          </div>
+        </div>
+
+        <!-- Redis + Workers row -->
+        <div class="flow-row" style="margin-top:4px;">
+          <!-- Redis -->
+          <div class="sub-box dashed" style="flex:0.8;">
+            <div class="sub-box-title" style="display:flex;align-items:center;gap:6px;">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="8" rx="2" fill="#CE93D8" stroke="#7B1FA2" stroke-width="1"/><text x="8" y="10" text-anchor="middle" font-size="6" fill="#fff" font-weight="700">Q</text></svg>
+              Redis — Background Job Queue
+            </div>
+            <div class="sub-box-body">queue only · MongoDB stays the database</div>
+            <div class="sub-box-note" style="display:flex;align-items:center;gap:4px;"><span class="badge" style="font-size:9px;background:#CE93D8;color:#fff;padding:1px 6px;border-radius:3px;">PROPOSED</span></div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="display:flex;align-items:center;justify-content:center;flex:0 0 36px;">
+            <div style="width:30px;height:0;border-top:2px dashed #7B1FA2;position:relative;">
+              <div style="position:absolute;right:-5px;top:-5px;border-left:7px solid #7B1FA2;border-top:5px solid transparent;border-bottom:5px solid transparent;"></div>
+            </div>
+          </div>
+
+          <!-- Background Workers -->
+          <div class="sub-box dashed" style="flex:1.2;">
+            <div class="sub-box-title" style="display:flex;align-items:center;gap:6px;">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" fill="#CE93D8" stroke="#7B1FA2" stroke-width="1"/><text x="8" y="10.5" text-anchor="middle" font-size="7" fill="#fff" font-weight="700">W</text></svg>
+              Background Workers (Python · ARQ)
+            </div>
+            <div class="sub-box-body">
+              CSV post-commit processing<br>
+              anomaly recompute · retries · failure reports<br>
+              large exports <span style="color:#BDBDBD;">(future)</span>
+            </div>
+            <div class="sub-box-note">same services &amp; repositories; scope-preserving; idempotent</div>
+            <div style="margin-top:4px;"><span class="badge" style="font-size:9px;background:#CE93D8;color:#fff;padding:1px 6px;border-radius:3px;">PROPOSED</span></div>
+          </div>
+        </div>
+
+        <!-- Job Status + Status pair row -->
+        <div class="flow-row" style="margin-top:4px;">
+          <!-- Job Status -->
+          <div class="sub-box dashed" style="flex:1;">
+            <div class="sub-box-title">Job Status — <code style="font-size:11px;background:#EDE7F6;padding:2px 6px;border-radius:3px;color:#4A148C;">GET /api/jobs/{job_id}</code></div>
+            <div class="state-flow">
+              <span class="state-chip state-queued">QUEUED</span>
+              <span class="state-arrow">→</span>
+              <span class="state-chip state-running">RUNNING</span>
+              <span class="state-arrow">→</span>
+              <span class="state-chip state-completed">COMPLETED</span>
+            </div>
+            <div class="state-flow" style="margin-top:4px;">
+              <span style="font-size:10px;color:#757575;margin-right:6px;">Alternate:</span>
+              <span class="state-chip state-failed">FAILED</span>
+              <span style="margin:0 4px;font-size:10px;color:#9E9E9E;">|</span>
+              <span class="state-chip state-retrying">RETRYING</span>
+              <span style="margin-left:8px;font-size:10px;color:#9575CD;font-style:italic;">reconcile / retry</span>
+            </div>
+            <div style="margin-top:4px;"><span class="badge" style="font-size:9px;background:#CE93D8;color:#fff;padding:1px 6px;border-radius:3px;">PROPOSED</span></div>
+          </div>
+
+          <!-- Batch vs Post-Commit status -->
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+            <div style="font-size:11px;font-weight:600;color:#4A148C;margin-bottom:6px;text-align:center;">Distinct Status Tracking</div>
+            <div class="status-pair">
+              <div class="status-batch">
+                Batch Commit<br>Status
+                <div style="font-size:9px;font-weight:400;margin-top:3px;color:#388E3C;">Records committed ✓</div>
+              </div>
+              <div class="status-postcommit">
+                Post-Commit<br>Processing Status
+                <div style="font-size:9px;font-weight:400;margin-top:3px;color:#E65100;">Anomaly recompute pending…</div>
+              </div>
+            </div>
+            <div style="font-size:9.5px;color:#9E9E9E;text-align:center;margin-top:4px;font-style:italic;">Batch may be committed while anomaly recomputation is still pending</div>
+          </div>
+        </div>
+
+        <!-- Reliability Controls -->
+        <div class="sub-box dashed" style="margin-top:4px;">
+          <div class="sub-box-title" style="display:flex;align-items:center;gap:6px;">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 1L2 4v4c0 3.5 2.5 6.5 6 7.5 3.5-1 6-4 6-7.5V4L8 1z" fill="#CE93D8" stroke="#7B1FA2" stroke-width="1"/><text x="8" y="10" text-anchor="middle" font-size="7" fill="#fff" font-weight="700">R</text></svg>
+            Reliability Controls
+            <span class="badge">PROPOSED</span>
+          </div>
+          <div class="sub-box-body" style="display:flex;gap:20px;flex-wrap:wrap;">
+            <span>Idempotency keys · duplicate-job prevention</span>
+            <span>Retry limits · failure states · recovery</span>
+            <span>Redis-unavailable → explicit error · reconcile</span>
+            <span>Atomic intake-capacity reservation</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Case & Review Management -->
+    <div class="case-mgmt">
+      <div class="container mixed" style="flex:1;display:flex;flex-direction:column;">
+        <div class="container-title">
+          <span class="step-marker">7</span>
+          Case &amp; Review Management
+          <span class="badge badge-existing">EXISTING + PROPOSED</span>
+          <span style="font-size:10px;color:#757575;margin-left:auto;">findings → cases</span>
+        </div>
+
+        <!-- Case workflow -->
+        <div style="flex:1;display:flex;flex-direction:column;gap:0;padding:0 30px;">
+          <!-- Step 1 -->
+          <div class="case-step existing-step">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect width="14" height="14" rx="3" fill="#5E35B1"/><text x="7" y="10" text-anchor="middle" font-size="8" fill="#fff" font-weight="700">1</text></svg>
+            Compliance finding (persisted)
+            <span style="font-size:9px;color:#5E35B1;margin-left:auto;">from anomaly engine</span>
+          </div>
+          <div class="case-arrow-down"><div class="arr"></div></div>
+
+          <!-- Step 2 -->
+          <div class="case-step existing-step">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect width="14" height="14" rx="3" fill="#5E35B1"/><text x="7" y="10" text-anchor="middle" font-size="8" fill="#fff" font-weight="700">2</text></svg>
+            Case creation (review task)
+            <span style="font-size:9px;color:#5E35B1;margin-left:auto;">EXISTING</span>
+          </div>
+          <div class="case-arrow-down"><div class="arr"></div></div>
+
+          <!-- Step 3 — proposed -->
+          <div class="case-step proposed-step">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect width="14" height="14" rx="3" fill="#7B1FA2"/><text x="7" y="10" text-anchor="middle" font-size="8" fill="#fff" font-weight="700">3</text></svg>
+            Assign / reassign · history · due dates
+            <span class="star">*</span>
+            <span style="font-size:9px;color:#7B1FA2;margin-left:auto;">PROPOSED</span>
+          </div>
+          <div class="case-arrow-down"><div class="arr"></div></div>
+
+          <!-- Step 4 — proposed -->
+          <div class="case-step proposed-step">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect width="14" height="14" rx="3" fill="#7B1FA2"/><text x="7" y="10" text-anchor="middle" font-size="8" fill="#fff" font-weight="700">4</text></svg>
+            Investigation &amp; notes
+            <span class="star">*</span>
+            <span style="font-size:9px;color:#7B1FA2;margin-left:auto;">PROPOSED</span>
+          </div>
+          <div class="case-arrow-down"><div class="arr"></div></div>
+
+          <!-- Step 5 -->
+          <div class="case-step existing-step">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect width="14" height="14" rx="3" fill="#5E35B1"/><text x="7" y="10" text-anchor="middle" font-size="8" fill="#fff" font-weight="700">5</text></svg>
+            Resolution decision — authorized human
+          </div>
+          <div class="case-arrow-down"><div class="arr"></div></div>
+
+          <!-- Step 6 -->
+          <div class="case-step existing-step">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect width="14" height="14" rx="3" fill="#5E35B1"/><text x="7" y="10" text-anchor="middle" font-size="8" fill="#fff" font-weight="700">6</text></svg>
+            Status update
+            <span style="font-size:9px;color:#757575;margin-left:auto;">→ feeds dashboard via API (Zone 6)</span>
+          </div>
+          <div class="case-arrow-down"><div class="arr"></div></div>
+
+          <!-- Step 7 -->
+          <div class="case-step existing-step" style="background:#D1C4E9;border-color:#4527A0;">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect width="14" height="14" rx="3" fill="#4527A0"/><text x="7" y="10" text-anchor="middle" font-size="8" fill="#fff" font-weight="700">7</text></svg>
+            Audit record
+            <span style="font-size:9px;color:#4527A0;margin-left:auto;">→ Zone 5 (hash-chained audit trail)</span>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="note-box" style="margin-top:10px;">
+          <div>Resolution uses <strong>version-based optimistic concurrency</strong><span class="star" style="color:#F57F17;"> *</span> &nbsp;|&nbsp; Status feeds dashboard via API</div>
+          <div style="margin-top:3px;"><span style="color:#F57F17;font-weight:700;">*</span> = proposed improvement — assignment, reassignment, due-date management, investigation notes, optimistic concurrency for anomaly resolution</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span class="footer-text">VERIDUCATE — Academic Admission Compliance &amp; Credential Verification Platform</span>
+    <span class="footer-text">Smart India Hackathon 2026 &nbsp;|&nbsp; SIH26263</span>
+    <span class="footer-text">Zone 4 of 6 &nbsp;|&nbsp; Async Processing &amp; Case Management</span>
+  </div>
+
+</div>
+</body>
+</html>

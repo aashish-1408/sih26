@@ -11,7 +11,7 @@
       /* Apply the theme before the module graph loads: no flash of light UI. */
       (function () {
         try {
-          var choice = localStorage.getItem('edusync.theme') || 'system';
+          var choice = localStorage.getItem('veriducate.theme') || 'system';
           var dark = choice === 'dark' || (choice === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
           document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
           document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
@@ -22,9 +22,9 @@
     </script>
     <meta
       name="description"
-      content="EduSynC - APAAR ID student data management, validation and verification for AICTE-approved institutions."
+      content="Veriducate - Academic admission compliance and credential verification for AICTE-approved institutions."
     />
-    <title>EduSynC - APAAR ID Platform</title>
+    <title>Veriducate - APAAR ID Platform</title>
   </head>
   <body>
     <div id="root"></div>

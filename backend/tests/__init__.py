@@ -1,1 +1,1 @@
-"""The EduSynC test-suite."""
+"""The Veriducate test-suite."""

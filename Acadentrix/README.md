@@ -1,14 +1,14 @@
 <div align="center">
 
-<img src="../docs/assets/brand/edusync-lockup.png" alt="EduSynC" height="180" />
+<img src="../docs/assets/brand/veriducate-lockup.png" alt="Veriducate" height="180" />
 
-# EduSynC
+# Veriducate
 
 **The APAAR ID Student Data Management & Verification Platform**
 
-*A product of **EduSynC** · AICTE (All India Council for Technical Education)*
+*A product of **Veriducate** · AICTE (All India Council for Technical Education)*
 
-[← Repository overview](../README.md) · [Website](https://kumaribaishnabidas.github.io/EduSynC/)
+[← Repository overview](../README.md) · [Website](https://kumaribaishnabidas.github.io/Veriducate/)
 
 </div>
 
@@ -24,11 +24,11 @@ APAAR or AICTE verification service.
 
 | | |
 | --- | --- |
-| **Product / app / project name** | **EduSynC** |
-| **Brand name and logo** | **EduSynC** |
+| **Product / app / project name** | **Veriducate** |
+| **Brand name and logo** | **Veriducate** |
 | **Package / application id** | `com.acadentrix.app` |
 | **Gradle project name** | `Acadentrix` |
-| **Launcher icon** | EduSynC mark, adaptive icon + themed-monochrome layer |
+| **Launcher icon** | Veriducate mark, adaptive icon + themed-monochrome layer |
 
 The platform serves four distinct roles from a single install:
 
@@ -141,7 +141,7 @@ data/
   local/        ApaarDatabase.kt, Daos.kt, Entities.kt, SeedData.kt   — Room (KSP)
   repository/   ApaarRepository.kt                 — single source of truth for the UI
 ui/
-  theme/        Color.kt, Theme.kt, Type.kt         — EduSynC brand palette, light/dark
+  theme/        Color.kt, Theme.kt, Type.kt         — Veriducate brand palette, light/dark
   components/   Common.kt, Widgets.kt, QrCodeView.kt, Brand.kt
   screens/      aicte/ institution/ verifier/ student/ role/
   viewmodel/    ApaarViewModel.kt                   — StateFlow<ApaarUiState>
@@ -160,7 +160,7 @@ ui/
 
 ### Design language
 
-Dense, data-first, government-grade. The palette is the **EduSynC brand**, sampled directly from the
+Dense, data-first, government-grade. The palette is the **Veriducate brand**, sampled directly from the
 supplied logo artwork: navy `#14246B` / `#0F2F73`, mid blue `#0F3A8A`, bright blue `#1558B8`, brand
 teal `#12B886`. Regulatory semantics keep their own colours — saffron gold `#E65100`/`#F57C00`,
 emerald `#1B5E20`/`#2E7D32`, crimson `#B71C1C`/`#C62828` — with surfaces `#F8F9FA` (light) /
@@ -170,19 +170,19 @@ credential card, severity badges.
 
 ### Branding surfaces
 
-The EduSynC logo is present wherever a user might want to know who built the product:
+The Veriducate logo is present wherever a user might want to know who built the product:
 
 * **Launcher icon** — the supplied mark, shipped as an adaptive icon (`mipmap-anydpi-v26`) with a
   white plate matching the artwork's own ground, density-bucketed legacy PNGs and a monochrome
   silhouette for themed icons on Android 13+.
-* **App header** — the mark on its white plate, `EDUSYNC` as the product and `APAAR ID platform` beneath.
+* **App header** — the mark on its white plate, `VERIDUCATE` as the product and `APAAR ID platform` beneath.
 * **Role select** — the brand lockup closes the page, naming the product and the platform.
 * **Degree certificate** — the mark appears in the letterhead and in the signature footer beside
-  `EDUSYNC · APAAR ID platform`.
+  `VERIDUCATE · APAAR ID platform`.
 
-The artwork itself is the team's own raster asset (`res/drawable-nodpi/edusync_mark.png`), so what
+The artwork itself is the team's own raster asset (`res/drawable-nodpi/veriducate_mark.png`), so what
 ships on screen is pixel-identical to the supplied logo rather than a redrawn approximation.
-`ui/components/Brand.kt` holds the shared `EduSynCMark`, `EduSynCPlate` and `EduSynCLockup`
+`ui/components/Brand.kt` holds the shared `VeriducateMark`, `VeriducatePlate` and `VeriducateLockup`
 composables.
 
 ---

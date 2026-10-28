@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import PageHeader from '../components/layout/PageHeader'
 import { Badge, Card, EmptyState, ErrorState, FilterBar, KpiCard, Spinner } from '../components/common'
 import { useApi } from '../hooks/useApi'
 import { api, errorMessage } from '../services/api'
@@ -56,10 +55,10 @@ export default function AnomaliesPage() {
 
   return (
     <>
-      <PageHeader
-        title="Anomaly inspector"
-        lead="Every finding carries a rule code, a severity, an explanation and a recommended next step. An anomaly is an indication for investigation, not proof of fraud."
-      />
+      <div className="page-header">
+        <h1 className="page-title">Anomaly Inspector</h1>
+        <p className="page-subtitle">Every finding carries a rule code, a severity, an explanation and a recommended next step. An anomaly is an indication for investigation, not proof of fraud.</p>
+      </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
         <KpiCard label="Findings" value={formatNumber(summary.data?.total)} />
@@ -139,7 +138,7 @@ export default function AnomaliesPage() {
                     <td>
                       <Badge className={severityClass(row.severity)}>{row.severity}</Badge>
                     </td>
-                    <td className="text-xs font-semibold text-navy">
+                    <td className="text-xs font-semibold text-brand-text">
                       {anomalyLabel(row.anomaly_type)}
                     </td>
                     <td className="font-mono text-xs">{formatApaar(row.student_apaar_id)}</td>

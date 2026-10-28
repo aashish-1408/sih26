@@ -19,7 +19,6 @@ export default function LoginPage() {
   const [googleEnabled, setGoogleEnabled] = useState(false)
 
   useEffect(() => {
-    // The backend tells the portal whether Google sign-in is configured.
     api
       .get('/auth/google/config')
       .then((response) => setGoogleEnabled(Boolean(response.data?.enabled)))
@@ -27,7 +26,6 @@ export default function LoginPage() {
   }, [])
 
   useEffect(() => {
-    // A failed Google sign-in comes back with the reason in the fragment.
     const fragment = window.location.hash.startsWith('#')
       ? window.location.hash.slice(1)
       : window.location.hash
@@ -59,9 +57,10 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-canvas">
-      <section className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-navy via-mid-blue to-bright-blue text-white p-12">
+      <section className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-brand-deep via-brand to-brand-mid text-white p-12">
         <div className="flex items-center gap-3">
-          <img src="/brand/edusync-lockup.png" alt="EduSynC" className="h-11 w-auto" />
+          <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center text-white font-bold text-lg">V</div>
+          <span className="text-xl font-bold tracking-wide">Veriducate</span>
         </div>
         <div className="max-w-xl">
           <h1 className="m-0 text-white text-4xl leading-tight">
@@ -85,7 +84,10 @@ export default function LoginPage() {
       <section className="flex items-center justify-center p-6">
         <div className="card w-full max-w-md p-7">
           <div className="flex items-center justify-between gap-3 mb-6">
-            <img src="/brand/edusync-wordmark.png" alt="EduSynC" className="h-9 w-auto" />
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center text-white font-bold text-sm">V</div>
+              <span className="text-lg font-bold text-brand-text">Veriducate</span>
+            </div>
             <div className="flex items-center gap-2">
               <ThemeToggle variant="surface" label={t('settings.theme.label')} />
               <LanguageSwitcher variant="surface" />
@@ -126,14 +128,14 @@ export default function LoginPage() {
             />
 
             {error && (
-              <p role="alert" className="mt-3 mb-0 text-sm text-crimson">
+              <p role="alert" className="mt-3 mb-0 text-sm text-danger">
                 {error}
               </p>
             )}
 
             <button
               type="submit"
-              className="btn btn-navy w-full mt-5"
+              className="btn btn-primary w-full mt-5"
               disabled={loading}
             >
               {loading ? t('login.signingIn') : t('login.signIn')}

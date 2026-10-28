@@ -73,9 +73,9 @@ describe('the Google callback page', () => {
     )
 
     await waitFor(() =>
-      expect(window.localStorage.getItem('edusync.token')).toBe('abc'),
+      expect(window.localStorage.getItem('veriducate.token')).toBe('abc'),
     )
-    expect(window.localStorage.getItem('edusync.refresh')).toBe('def')
+    expect(window.localStorage.getItem('veriducate.refresh')).toBe('def')
     expect(replaceState).toHaveBeenCalledWith({}, '', window.location.pathname)
   })
 
@@ -93,6 +93,6 @@ describe('the Google callback page', () => {
     await waitFor(() =>
       expect(screen.getByText(/Google refused the sign-in/i)).toBeInTheDocument(),
     )
-    expect(window.localStorage.getItem('edusync.token')).toBeNull()
+    expect(window.localStorage.getItem('veriducate.token')).toBeNull()
   })
 })
