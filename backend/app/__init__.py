@@ -1,3 +1,3 @@
-"""EduSynC - APAAR ID Student Data Management & Verification Platform."""
+"""Veriducate - Academic Admission Compliance & Credential Verification Platform."""
 
 __version__ = "1.0.0"

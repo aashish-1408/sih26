@@ -1,5 +1,5 @@
 /**
- * The single HTTP client of the EduSynC web frontend.
+ * The single HTTP client of the Veriducate web frontend.
  *
  * Every request carries the bearer token, and a 401 automatically sends the
  * user back to the sign-in page. The React components never talk to Axios
@@ -9,7 +9,7 @@
 import axios from 'axios'
 
 /**
- * The origin of the EduSynC API.
+ * The origin of the Veriducate API.
  *
  * `VITE_API_URL` is read at BUILD time, so changing it needs a new
  * deployment, not just a restart.
@@ -53,15 +53,15 @@ const BASE_URL = apiBaseUrl()
 if (import.meta.env.PROD && !import.meta.env.VITE_API_URL) {
   // eslint-disable-next-line no-console
   console.error(
-    'EduSynC: VITE_API_URL is not set. This build talks to "/api" on its own ' +
+    'Veriducate: VITE_API_URL is not set. This build talks to "/api" on its own ' +
       'origin, which only works when the API serves the frontend. On a split ' +
       'deployment set VITE_API_URL to the backend URL and rebuild.',
   )
 }
 
-const TOKEN_KEY = 'edusync.token'
-const REFRESH_KEY = 'edusync.refresh'
-const USER_KEY = 'edusync.user'
+const TOKEN_KEY = 'veriducate.token'
+const REFRESH_KEY = 'veriducate.refresh'
+const USER_KEY = 'veriducate.user'
 
 export const api = axios.create({
   baseURL: BASE_URL,

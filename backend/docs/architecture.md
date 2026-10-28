@@ -1,4 +1,4 @@
-# EduSynC - Architecture
+# Veriducate - Architecture
 
 ## 1. The problem in one paragraph
 
@@ -6,7 +6,7 @@ AICTE-approved institutions each hold their own student registers. The national
 picture of *sanctioned intake against actual enrolment* only exists after the
 data is collected, and by the time it is collected it is already wrong: a
 student is admitted twice, a foreign-national seat is filled by an Indian
-citizen, a supernumerary ceiling is quietly exceeded. EduSynC moves the
+citizen, a supernumerary ceiling is quietly exceeded. Veriducate moves the
 validation to the moment the data arrives, and makes the resulting record
 verifiable by anyone who holds the APAAR ID.
 
@@ -247,15 +247,15 @@ matrix.
 
 ## 13. Deployment
 
-* `render.yaml` - the Render web service: `rootDir: edusync`,
+* `render.yaml` - the Render web service: `rootDir: backend`,
   `uvicorn app.main:app --host 0.0.0.0 --port $PORT`, health check `/health`.
   The secrets are declared with `sync: false`, so they are set in the Render
   dashboard and never in the file.
 * `frontend/vercel.json` - the SPA rewrite and the safe security headers.
-* `edusync/Dockerfile` - a three-stage build: the React bundle, the Python
+* `veriducate/Dockerfile` - a three-stage build: the React bundle, the Python
   dependencies, and a slim runtime image that runs as a non-root user.
 * `docker-compose.yml` - MongoDB 7 plus the API, with a health check.
-* `.github/workflows/edusync.yml` - the backend suite on Python 3.11, 3.12 and
+* `.github/workflows/veriducate.yml` - the backend suite on Python 3.11, 3.12 and
   3.13, the frontend suite on Node 20 and 22, then a container build and a
   health-check smoke test.
 * `SECRET_KEY`, `SEAL_HMAC_KEY` and the database URL come from the

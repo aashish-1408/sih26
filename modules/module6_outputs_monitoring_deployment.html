@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Zone 6 — Outputs, Monitoring & Deployment | Veriducate</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; font-family: 'Inter', sans-serif; background: #fff; color: #424242; }
+  .canvas { width: 1920px; height: 1080px; position: relative; padding: 28px 32px 20px; display: flex; flex-direction: column; }
+
+  /* Title Bar */
+  .title-bar { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; flex-shrink: 0; }
+  .title-bar h1 { font-size: 26px; font-weight: 700; color: #E65100; letter-spacing: 0.5px; }
+  .title-bar .subtitle { font-size: 13px; color: #795548; font-weight: 500; margin-top: 2px; }
+  .title-bar .project { font-size: 11px; color: #9E9E9E; margin-top: 1px; }
+
+  /* Legend */
+  .legend { display: flex; gap: 18px; align-items: center; flex-shrink: 0; padding: 6px 14px; border: 1px solid #E0E0E0; border-radius: 6px; background: #FAFAFA; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 10.5px; color: #616161; }
+  .legend-line { width: 28px; height: 0; border-top: 2.5px solid #424242; }
+  .legend-line.dashed { border-top-style: dashed; border-color: #7B1FA2; }
+  .legend-line.future { border-top-style: dashed; border-color: #BDBDBD; }
+  .legend-badge { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; background: #E65100; color: #fff; font-size: 9px; font-weight: 700; }
+  .legend-badge.cross { background: #1565C0; }
+
+  /* Main content grid */
+  .main { flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr 260px; grid-template-rows: auto auto 1fr; gap: 12px; min-height: 0; }
+
+  /* Card styles */
+  .card { border-radius: 8px; padding: 12px 14px; position: relative; }
+  .card-existing { background: #FFF8E1; border: 2px solid #F57F17; }
+  .card-proposed { background: #FFF8E1; border: 2px dashed #F57F17; }
+  .card-proposed-violet { background: #F3E5F5; border: 2px dashed #7B1FA2; }
+  .card-deploy { background: #F5F5F5; border: 2px solid #9E9E9E; }
+  .card-deploy-proposed { background: #F5F5F5; border: 2px dashed #9E9E9E; }
+  .card-teal { background: #E0F2F1; border: 2px solid #009688; }
+  .card-teal-proposed { background: #E0F2F1; border: 2px dashed #009688; }
+
+  .card-title { font-size: 13.5px; font-weight: 700; color: #E65100; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .card-title.teal { color: #00695C; }
+  .card-title.violet { color: #6A1B9A; }
+  .card-title.deploy { color: #546E7A; }
+
+  .badge { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 700; color: #fff; padding: 0 2px; flex-shrink: 0; }
+  .badge-step { background: #E65100; }
+  .badge-cross { background: #1565C0; }
+
+  .tag { display: inline-block; font-size: 9.5px; font-weight: 600; padding: 1px 6px; border-radius: 3px; margin-left: 4px; }
+  .tag-existing { background: #C8E6C9; color: #2E7D32; }
+  .tag-proposed { background: #E1BEE7; color: #6A1B9A; }
+  .tag-future { background: #E0E0E0; color: #757575; }
+
+  .card ul { list-style: none; padding: 0; }
+  .card ul li { font-size: 11.5px; line-height: 1.55; padding-left: 10px; position: relative; color: #555; }
+  .card ul li::before { content: '·'; position: absolute; left: 0; color: #F57F17; font-weight: 700; }
+  .card ul.teal-dots li::before { color: #009688; }
+  .card ul.violet-dots li::before { color: #7B1FA2; }
+  .card ul.deploy-dots li::before { color: #78909C; }
+
+  .card .note { font-size: 10px; color: #888; font-style: italic; margin-top: 4px; line-height: 1.4; }
+  .proposed-sub { border: 1.5px dashed #F57F17; border-radius: 5px; padding: 4px 8px; margin-top: 6px; background: rgba(255,243,224,0.5); }
+  .proposed-sub .sub-label { font-size: 10px; font-weight: 600; color: #E65100; }
+
+  .api-connector { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; color: #1565C0; background: #E3F2FD; padding: 2px 8px; border-radius: 3px; margin-top: 4px; }
+
+  /* Pipeline */
+  .pipeline { display: flex; align-items: center; gap: 0; margin: 8px 0; flex-wrap: wrap; }
+  .pipeline-step { background: #ECEFF1; border: 1.5px solid #90A4AE; border-radius: 6px; padding: 5px 10px; font-size: 10.5px; font-weight: 600; color: #37474F; white-space: nowrap; }
+  .pipeline-arrow { color: #90A4AE; font-size: 16px; margin: 0 2px; flex-shrink: 0; }
+
+  /* Deployment icons row */
+  .deploy-icons { display: flex; gap: 10px; flex-wrap: wrap; margin: 6px 0; }
+  .deploy-icon { display: flex; align-items: center; gap: 4px; background: #fff; border: 1.5px solid #B0BEC5; border-radius: 5px; padding: 3px 8px; font-size: 10.5px; font-weight: 600; color: #455A64; }
+  .deploy-icon .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-render { background: #7C4DFF; }
+  .dot-vercel { background: #212121; }
+  .dot-mongo { background: #4CAF50; }
+  .dot-docker { background: #2196F3; }
+  .dot-gh { background: #F44336; }
+
+  /* Scaling diagram */
+  .scale-diagram { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: 6px; }
+  .scale-row { display: flex; align-items: center; gap: 8px; }
+  .scale-box { background: #fff; border: 1.5px dashed #9E9E9E; border-radius: 5px; padding: 4px 10px; font-size: 10px; font-weight: 600; color: #546E7A; text-align: center; }
+  .scale-arrow { color: #9E9E9E; font-size: 14px; }
+
+  /* Observability flow */
+  .obs-flow { display: flex; flex-direction: column; align-items: center; gap: 3px; margin: 8px 0; }
+  .obs-box { background: #fff; border: 1.5px dashed #7B1FA2; border-radius: 5px; padding: 4px 12px; font-size: 11px; font-weight: 600; color: #6A1B9A; text-align: center; }
+  .obs-arrow { color: #7B1FA2; font-size: 14px; }
+
+  /* Metrics grid */
+  .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 8px; margin-top: 5px; }
+  .metric { font-size: 10px; color: #6A1B9A; padding-left: 8px; position: relative; }
+  .metric::before { content: '▸'; position: absolute; left: 0; font-size: 8px; }
+
+  /* Workflow sidebar */
+  .workflow-sidebar { grid-row: 1 / 4; display: flex; flex-direction: column; }
+  .workflow-card { background: #FBE9E7; border: 2px solid #E65100; border-radius: 8px; padding: 12px 12px; flex: 1; display: flex; flex-direction: column; }
+  .workflow-card h3 { font-size: 13px; font-weight: 700; color: #BF360C; margin-bottom: 8px; text-align: center; }
+  .workflow-list { list-style: none; flex: 1; }
+  .workflow-list li { font-size: 10.5px; line-height: 1.6; display: flex; gap: 6px; align-items: flex-start; color: #4E342E; }
+  .workflow-list li .wnum { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; min-width: 18px; border-radius: 50%; background: #E65100; color: #fff; font-size: 9px; font-weight: 700; margin-top: 1px; }
+  .workflow-list li .wnum.proposed-num { background: #7B1FA2; }
+  .workflow-list li span { flex: 1; }
+
+  /* Deployment section */
+  .deploy-section { grid-column: 1 / 4; display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 12px; }
+
+  /* Separator */
+  .section-sep { grid-column: 1 / -1; height: 1px; background: linear-gradient(90deg, transparent, #FFCC80, transparent); margin: 2px 0; }
+</style>
+</head>
+<body>
+<div class="canvas">
+
+  <!-- Title Bar -->
+  <div class="title-bar">
+    <div>
+      <h1>ZONE 6 — OUTPUTS, MONITORING & DEPLOYMENT</h1>
+      <div class="subtitle">Veriducate — Dashboards, Exports, Observability & Infrastructure</div>
+      <div class="project">Smart India Hackathon 2026 · SIH26263</div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-line"></div> EXISTING (implemented)</div>
+      <div class="legend-item"><div class="legend-line dashed"></div> PROPOSED P0 / P1</div>
+      <div class="legend-item"><div class="legend-line future"></div> FUTURE P2</div>
+      <div class="legend-item"><div class="legend-badge">n</div> workflow step</div>
+      <div class="legend-item"><div class="legend-badge cross">F</div> cross-zone link</div>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="main">
+
+    <!-- A. Central Compliance Dashboard -->
+    <div class="card card-existing">
+      <div class="card-title">
+        <span class="badge badge-step">8</span>
+        Central Compliance Dashboard
+        <span class="tag tag-existing">EXISTING</span>
+      </div>
+      <ul>
+        <li>National overview · institution/programme</li>
+        <li>Sanctioned vs actual · intake · severity counts</li>
+        <li>Open / overdue cases · recent submissions</li>
+        <li>Job status · last refresh · via authorized APIs</li>
+      </ul>
+      <div class="api-connector">← API → Veriducate Backend</div>
+      <div class="proposed-sub">
+        <div class="sub-label">Bureau-scoped view <span class="tag tag-proposed">PROPOSED</span></div>
+        <ul>
+          <li style="font-size:10px">Bureau-specific filtering and aggregation</li>
+          <li style="font-size:10px">Scoped compliance summaries per bureau</li>
+        </ul>
+      </div>
+      <div class="note">Dashboard retrieves data through authorized backend APIs. Does not query MongoDB directly.</div>
+    </div>
+
+    <!-- B. Anomaly & Investigation Workspace -->
+    <div class="card card-existing">
+      <div class="card-title">
+        Anomaly & Investigation Workspace
+        <span class="tag tag-existing">EXISTING</span>
+      </div>
+      <ul>
+        <li>Severity filters · rule-code details</li>
+        <li>Recommended actions · notes · history</li>
+      </ul>
+      <div class="proposed-sub">
+        <div class="sub-label">Enhanced workflow features <span class="tag tag-proposed">PROPOSED</span></div>
+        <ul style="margin-top:2px">
+          <li style="font-size:10px">Assignment / reassignment tracking</li>
+          <li style="font-size:10px">Overdue task indicators</li>
+          <li style="font-size:10px">Unassigned-case flags</li>
+        </ul>
+      </div>
+      <div class="note">Connected to anomaly detection engine and case-management services (Zone 3 &amp; 4).</div>
+    </div>
+
+    <!-- E. Observability — Proposed P1 -->
+    <div class="card card-proposed-violet">
+      <div class="card-title violet">
+        Observability
+        <span class="tag tag-proposed">PROPOSED P1</span>
+      </div>
+      <div class="obs-flow">
+        <div class="obs-box">FastAPI instances + workers</div>
+        <div class="obs-arrow">↓ <span style="font-size:9px">operational metrics</span> ↓</div>
+        <div class="obs-box">Prometheus</div>
+        <div class="obs-arrow">↓</div>
+        <div class="obs-box">Grafana (operators)</div>
+      </div>
+      <div class="metrics-grid">
+        <div class="metric">Latency</div>
+        <div class="metric">Error rate</div>
+        <div class="metric">Queue depth</div>
+        <div class="metric">Job duration</div>
+        <div class="metric">Failed jobs</div>
+        <div class="metric">Worker availability</div>
+        <div class="metric">MongoDB health</div>
+        <div class="metric">Batch duration</div>
+      </div>
+      <div class="note" style="color:#7B1FA2">Separate from the AICTE compliance dashboard.<br>Grafana serves technical operators only.</div>
+    </div>
+
+    <!-- G. End-to-End Workflow (sidebar) -->
+    <div class="workflow-sidebar">
+      <div class="workflow-card">
+        <h3>End-to-End Workflow</h3>
+        <ol class="workflow-list">
+          <li><span class="wnum">1</span><span>Sign in; role + institution scope resolved</span></li>
+          <li><span class="wnum">2</span><span>Institution admin uploads CSV</span></li>
+          <li><span class="wnum">3</span><span>Preview — no student records written</span></li>
+          <li><span class="wnum">4</span><span>Approve & commit permitted rows</span></li>
+          <li><span class="wnum proposed-num">5</span><span>Background processing (job id)*</span></li>
+          <li><span class="wnum">6</span><span>Compliance findings, rule codes, severity</span></li>
+          <li><span class="wnum proposed-num">7</span><span>Case review, assignment*, resolution</span></li>
+          <li><span class="wnum">8</span><span>Dashboard shows state, not "all done"</span></li>
+          <li><span class="wnum">9</span><span>Credential / receipt issued (QR, PDF)</span></li>
+          <li><span class="wnum">10</span><span>Verifier gets verdict + permitted fields</span></li>
+          <li><span class="wnum">11</span><span>Audit events across every step</span></li>
+        </ol>
+        <div class="note" style="margin-top:6px; text-align:center; color:#BF360C;">* = proposed capability</div>
+      </div>
+    </div>
+
+    <!-- Row 2: Verification Interface + Reports & Exports -->
+
+    <!-- D. Verification Interface -->
+    <div class="card card-teal">
+      <div class="card-title teal">
+        <span class="badge badge-step">10</span>
+        Verification Interface
+        <span class="tag tag-existing">EXISTING</span>
+      </div>
+      <ul class="teal-dots">
+        <li>Single credential verify · QR entry</li>
+        <li>Verdict table · permitted fields only</li>
+        <li>Revocation & consent checks applied</li>
+      </ul>
+      <div class="proposed-sub" style="border-color:#009688; background:rgba(224,242,241,0.5)">
+        <div class="sub-label" style="color:#00695C">Bulk Verification <span class="tag tag-proposed">PROPOSED</span></div>
+        <div style="font-size:10px; color:#00695C; margin-top:2px">
+          <code style="font-size:9.5px; background:#B2DFDB; padding:1px 4px; border-radius:2px">POST /api/verify/bulk</code><br>
+          size-limited · authorized · reuses token,<br>revocation & consent logic
+        </div>
+      </div>
+    </div>
+
+    <!-- C. Reports & Exports -->
+    <div class="card card-existing">
+      <div class="card-title">
+        Reports & Exports
+        <span class="tag tag-existing">EXISTING</span>
+      </div>
+      <ul>
+        <li>CSV · evidence reports · PDF certificates</li>
+        <li>Audit-history export · scoped reports</li>
+        <li>Institution-scoped & national reports</li>
+      </ul>
+      <div class="note">Large exports = future background job</div>
+    </div>
+
+    <!-- Spacer for observability row -->
+    <div></div>
+
+    <!-- Section Separator -->
+    <div class="section-sep"></div>
+
+    <!-- F. Deployment Section (3 columns, spans first 3 grid cols) -->
+    <div class="deploy-section">
+
+      <!-- Column 1: Deployment Targets -->
+      <div class="card card-deploy">
+        <div class="card-title deploy">
+          Deployment Configuration Targets
+          <span class="tag tag-existing">EXISTING</span>
+        </div>
+        <div class="deploy-icons">
+          <div class="deploy-icon"><div class="dot dot-render"></div>Render · API</div>
+          <div class="deploy-icon"><div class="dot dot-vercel"></div>Vercel · web</div>
+          <div class="deploy-icon"><div class="dot dot-mongo"></div>MongoDB Atlas</div>
+        </div>
+        <div class="deploy-icons">
+          <div class="deploy-icon"><div class="dot dot-docker"></div>Dockerfile</div>
+          <div class="deploy-icon"><div class="dot dot-docker"></div>Docker Compose</div>
+          <div class="deploy-icon"><div class="dot dot-gh"></div>GitHub Actions CI</div>
+        </div>
+        <div class="note">Docker Compose is for local development · CI is not in the live request path.<br>Not proof of production-scale operation.</div>
+      </div>
+
+      <!-- Column 2: CI Pipeline -->
+      <div class="card card-deploy">
+        <div class="card-title deploy">
+          CI Pipeline — GitHub Actions
+          <span class="tag tag-existing">EXISTING</span>
+          <span style="font-size:10px; color:#78909C; font-weight:400">(build & verify only)</span>
+        </div>
+        <div class="pipeline">
+          <div class="pipeline-step">GitHub Actions</div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step">Backend tests</div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step">Frontend tests</div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step">Container build</div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step">Health-check smoke test</div>
+        </div>
+        <div class="note">Runs on push / pull request; independent of the runtime architecture above.</div>
+      </div>
+
+      <!-- Column 3: Proposed Scalable Deployment -->
+      <div class="card card-deploy-proposed">
+        <div class="card-title deploy">
+          Proposed Scalable Deployment
+          <span class="tag tag-proposed">PROPOSED</span>
+        </div>
+        <div style="font-size:10px; color:#78909C; font-style:italic; margin-bottom:4px">(scaling option, not current state)</div>
+        <div class="scale-diagram">
+          <div class="scale-box">Reverse proxy / LB (optional)</div>
+          <div class="scale-arrow">↓</div>
+          <div class="scale-row">
+            <div class="scale-box">Multiple FastAPI instances</div>
+            <div class="scale-arrow">→</div>
+            <div class="scale-box">Shared MongoDB replica set</div>
+          </div>
+          <div style="height:2px"></div>
+          <div class="scale-row">
+            <div class="scale-box">FastAPI instances</div>
+            <div class="scale-arrow">→</div>
+            <div class="scale-box">Redis queue</div>
+            <div class="scale-arrow">→</div>
+            <div class="scale-box">Background workers</div>
+          </div>
+        </div>
+        <div class="note">Multiple API instances are a proposed scaling option; no production-scale claim.</div>
+      </div>
+
+    </div>
+
+    <!-- Audit Spine Footer (spans all) -->
+    <div style="grid-column: 1 / -1; display:flex; align-items:center; justify-content:center; gap:8px; margin-top:2px;">
+      <div style="flex:1; height:1.5px; background:linear-gradient(90deg, transparent, #78909C, #78909C);"></div>
+      <div style="font-size:10px; font-weight:600; color:#546E7A; white-space:nowrap; background:#ECEFF1; padding:3px 12px; border-radius:4px; border:1px solid #B0BEC5;">
+        AUDIT SPINE — events from every zone (auth · CSV commit · findings · cases · corrections · consent · credentials · reports) → hash-linked audit_events
+      </div>
+      <div style="flex:1; height:1.5px; background:linear-gradient(90deg, #78909C, #78909C, transparent);"></div>
+    </div>
+
+  </div><!-- /main -->
+
+</div><!-- /canvas -->
+</body>
+</html>

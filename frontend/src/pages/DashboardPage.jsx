@@ -14,12 +14,10 @@ import {
   YAxis,
 } from 'recharts'
 
-import PageHeader from '../components/layout/PageHeader'
-import { Card, ErrorState, KpiCard, Spinner } from '../components/common'
+import { Card, Badge, ErrorState, KpiCard, Spinner } from '../components/common'
 import { useApi } from '../hooks/useApi'
 import { api } from '../services/api'
 import { formatNumber, formatPercent, riskClass } from '../utils/format'
-import { Badge } from '../components/common'
 
 export default function DashboardPage() {
   const { t } = useTranslation()
@@ -56,10 +54,10 @@ export default function DashboardPage() {
 
   return (
     <>
-      <PageHeader
-        title={t('dashboard.title')}
-        lead={t('dashboard.lead')}
-      />
+      <div className="page-header">
+        <h1 className="page-title">{t('dashboard.title')}</h1>
+        <p className="page-subtitle">{t('dashboard.lead')}</p>
+      </div>
 
       {kpis.error && <ErrorState message={kpis.error} onRetry={kpis.reload} />}
 
@@ -148,7 +146,7 @@ export default function DashboardPage() {
               {risk.data.map((row) => (
                 <li key={row.institution_id} className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="m-0 font-semibold text-navy">{row.institution_id}</p>
+                    <p className="m-0 font-semibold text-brand-text">{row.institution_id}</p>
                     <p className="m-0 text-xs text-muted">
                       {row.reasons.join(' ')}
                     </p>
@@ -158,7 +156,7 @@ export default function DashboardPage() {
                   </div>
                   <div className="text-right shrink-0">
                     <Badge className={riskClass(row.band)}>{row.band}</Badge>
-                    <p className="m-0 mt-1 text-sm font-bold text-navy">{row.score}/100</p>
+                    <p className="m-0 mt-1 text-sm font-bold text-brand-text">{row.score}/100</p>
                   </div>
                 </li>
               ))}
@@ -188,7 +186,7 @@ export default function DashboardPage() {
                   {(compliance.data || []).map((row) => (
                     <tr key={row.institution_id}>
                       <td>
-                        <p className="m-0 font-semibold text-navy">{row.institution_name}</p>
+                        <p className="m-0 font-semibold text-brand-text">{row.institution_name}</p>
                         <p className="m-0 text-xs text-muted">{row.institution_id}</p>
                       </td>
                       <td>{formatNumber(row.total_approved)}</td>

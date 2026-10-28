@@ -35,8 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.acadentrix.core.model.UserRole
-import com.acadentrix.app.ui.components.EduSynCPlate
-import com.acadentrix.app.ui.components.EduSynCLockup
+import com.acadentrix.app.ui.components.VeriducatePlate
+import com.acadentrix.app.ui.components.VeriducateLockup
 import com.acadentrix.app.ui.components.RoleCard
 import com.acadentrix.app.ui.theme.ApaarTheme
 import com.acadentrix.app.ui.theme.NavyDeep
@@ -71,7 +71,7 @@ fun RoleSelectScreen(viewModel: ApaarViewModel) {
         ) {
             Column {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    EduSynCPlate(markSize = 26.dp, platePadding = 8.dp, radius = 13.dp)
+                    VeriducatePlate(markSize = 26.dp, platePadding = 8.dp, radius = 13.dp)
                     Spacer(Modifier.width(12.dp))
                     Column {
                         Text(
@@ -81,7 +81,7 @@ fun RoleSelectScreen(viewModel: ApaarViewModel) {
                             letterSpacing = 1.1.sp
                         )
                         Text(
-                            text = "EDUSYNC",
+                            text = "VERIDUCATE",
                             style = MaterialTheme.typography.headlineMedium,
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
@@ -204,11 +204,11 @@ fun RoleSelectScreen(viewModel: ApaarViewModel) {
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                EduSynCLockup(
+                VeriducateLockup(
                     markSize = 22.dp,
                     wordColor = MaterialTheme.colorScheme.onSurface,
                     subColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    subText = "EduSynC v1.0.0",
+                    subText = "Veriducate v1.0.0",
                     onWhite = true
                 )
             }

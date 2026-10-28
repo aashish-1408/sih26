@@ -1,4 +1,4 @@
-"""EduSynC - APAAR ID Student Data Management & Verification Platform.
+"""Veriducate - APAAR ID Student Data Management & Verification Platform.
 
 The FastAPI application exposes:
 
@@ -24,7 +24,7 @@ from app.core.database import mongo
 
 settings = get_settings()
 
-logger = logging.getLogger("edusync")
+logger = logging.getLogger("veriducate")
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s"
 )
@@ -39,7 +39,7 @@ async def lifespan(app: FastAPI):
     settings.assert_production_safe()
     await mongo.connect()
     logger.info(
-        "EduSynC is ready (MongoDB database '%s')", settings.mongodb_database
+        "Veriducate is ready (MongoDB database '%s')", settings.mongodb_database
     )
     logger.info(
         "Correction mode: %s",
@@ -76,7 +76,7 @@ async def lifespan(app: FastAPI):
                 logger.warning("    %-34s %s", email, role)
             logger.warning(
                 "    password: %s   (from DEMO_PASSWORD; change it in "
-                "edusync/.env)",
+                "veriducate/.env)",
                 summary["demo_password"],
             )
 
@@ -85,7 +85,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="EduSynC - APAAR ID Platform",
+    title="Veriducate - APAAR ID Platform",
     description=(
         "Student data management, automated validation, anomaly detection, "
         "signed credential verification, consent management and regulatory "

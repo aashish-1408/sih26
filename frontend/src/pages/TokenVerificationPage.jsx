@@ -14,7 +14,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
-import PageHeader from '../components/layout/PageHeader'
 import { Badge, Card, EmptyState, Spinner } from '../components/common'
 import { api, errorMessage } from '../services/api'
 import { formatDateTime } from '../utils/format'
@@ -47,10 +46,10 @@ export default function TokenVerificationPage() {
 
   return (
     <>
-      <PageHeader
-        title="Credential verification"
-        lead="This page resolves an opaque verification token against this prototype's own database."
-      />
+      <div className="page-header">
+        <h1 className="page-title">Credential Verification</h1>
+        <p className="page-subtitle">This page resolves an opaque verification token against this prototype's own database.</p>
+      </div>
 
       {loading && <Spinner label="Checking the token..." />}
 

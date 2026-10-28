@@ -1,23 +1,23 @@
-name: EduSynC
+name: Veriducate
 
 on:
   push:
     branches: [main]
     paths:
-      - "edusync/**"
+      - "backend/**"
       - "frontend/**"
       - "docker-compose.yml"
-      - ".github/workflows/edusync.yml"
+      - ".github/workflows/veriducate.yml"
   pull_request:
     branches: [main]
     paths:
-      - "edusync/**"
+      - "backend/**"
       - "frontend/**"
       - "docker-compose.yml"
-      - ".github/workflows/edusync.yml"
+      - ".github/workflows/veriducate.yml"
 
 concurrency:
-  group: edusync-${{ github.ref }}
+  group: veriducate-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: edusync
+        working-directory: backend
     strategy:
       fail-fast: false
       matrix:
@@ -41,7 +41,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-          cache-dependency-path: edusync/requirements.txt
+          cache-dependency-path: backend/requirements.txt
 
       - name: Install the dependencies
         run: |
@@ -61,7 +61,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pytest-report-python-${{ matrix.python-version }}
-          path: edusync/pytest-report.xml
+          path: backend/pytest-report.xml
           if-no-files-found: ignore
 
   frontend:
@@ -112,14 +112,9 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
 
-      - name: Build the image
-        run: docker build -f edusync/Dockerfile -t edusync:${{ github.sha }} .
-
       - name: Start MongoDB and the API
         run: |
-          docker compose up -d mongodb
-          # The image is built above, so compose is pointed at it.
-          docker compose up -d --no-build api || true
+          docker compose up -d --build
           for attempt in $(seq 1 40); do
             if curl -fsS http://localhost:8000/health; then
               echo ""

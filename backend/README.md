@@ -1,6 +1,6 @@
-# EduSynC - the Python backend
+# Veriducate - the Python backend
 
-The server of the **EduSynC** platform. It holds
+The server of the **Veriducate** platform. It holds
 the registry, runs the validation and the anomaly rules, and issues the
 credentials that the web frontend and the Android client consume.
 
@@ -25,7 +25,7 @@ credentials that the web frontend and the Android client consume.
 ### 1. The backend
 
 ```bash
-cd edusync
+cd veriducate
 python -m venv .venv
 # Windows
 .venv\Scripts\activate
@@ -64,7 +64,7 @@ The demo accounts are:
 
 | E-mail | Role |
 |---|---|
-| `aicte.admin@edusync.gov.in` | AICTE Directorate |
+| `aicte.admin@veriducate.gov.in` | AICTE Directorate |
 | `principal@vidyavikas.edu.in` | Institution admin (INST-0421) |
 | `principal@bhartiya.edu.in` | Institution admin (INST-0422) |
 | `verifier@acme-corp.com` | Verifier |
@@ -268,7 +268,7 @@ button in React is not a security control.
 | Variable | Purpose |
 |---|---|
 | `MONGODB_URL` | The MongoDB connection string. **Required** outside the demo mode. |
-| `MONGODB_DATABASE` | The database name. Default `edusync`. |
+| `MONGODB_DATABASE` | The database name. Default `veriducate`. |
 | `ALLOW_IN_MEMORY_DB` | `true` to run the throwaway demo database. Never in production. |
 | `SECRET_KEY` | The JWT signing key. At least 32 characters. |
 | `SEAL_HMAC_KEY` | The HMAC sealing key. |
@@ -289,7 +289,7 @@ button in React is not a security control.
 ## Tests
 
 ```bash
-cd edusync && pytest -q     # 258 tests
+cd veriducate && pytest -q     # 258 tests
 ```
 
 The suite runs against the in-memory MongoDB, so it needs no server and no

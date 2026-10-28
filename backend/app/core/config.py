@@ -9,14 +9,14 @@ from __future__ import annotations
 
 import secrets
 from functools import lru_cache
-from typing import Annotated, List
+from typing import List
 
-from pydantic import Field, field_validator, model_validator
-from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
+from pydantic import Field, model_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    """Runtime settings for the EduSynC platform."""
+    """Runtime settings for the Veriducate platform."""
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     )
 
     # ------------------------------------------------------------- identity
-    app_name: str = "EduSynC"
+    app_name: str = "Veriducate"
     environment: str = "dev"
     #: ``ENV`` is accepted as an alias of ``ENVIRONMENT`` because the hosting
     #: platforms set ``ENV`` by convention. ``ENVIRONMENT`` still wins when
@@ -40,7 +40,7 @@ class Settings(BaseSettings):
 
     # ------------------------------------------------------------- database
     mongodb_url: str = ""
-    mongodb_database: str = "edusync"
+    mongodb_database: str = "veriducate"
     mongodb_timeout_ms: int = 5000
     #: Key used to derive the privacy-preserving match token of an APAAR ID.
     #: An empty value falls back to the seal key.
@@ -78,13 +78,7 @@ class Settings(BaseSettings):
     seal_key_id: str = "apaar-verify-2024-01"
 
     # ------------------------------------------------------------- security
-    #: ``NoDecode`` stops pydantic-settings from trying to JSON-parse the
-    #: environment variable, so a plain comma-separated list works.
-    #:
-    #: The list is empty by default, which means the allowed origins are
-    #: exactly ``FRONTEND_ORIGIN`` - the only origin a deployment needs. The
-    #: local development origins are added in development only.
-    cors_origins: Annotated[List[str], NoDecode] = []
+    cors_origins: str = ""
     rate_limit_per_minute: int = 60
     upload_max_size_mb: int = 10
     bcrypt_rounds: int = 12
@@ -105,7 +99,7 @@ class Settings(BaseSettings):
     google_scopes: List[str] = ["openid", "email", "profile"]
 
     # -------------------------------------------------------------- session
-    session_cookie_name: str = "edusync_session"
+    session_cookie_name: str = "veriducate_session"
     session_max_age: int = 60 * 60 * 8
 
     # ----------------------------------------------------------- demo data
@@ -127,13 +121,6 @@ class Settings(BaseSettings):
                 values = {**values, "environment": alias}
         return values
 
-    @field_validator("cors_origins", mode="before")
-    @classmethod
-    def _split_origins(cls, value):
-        if isinstance(value, str):
-            return [item.strip() for item in value.split(",") if item.strip()]
-        return value
-
     @model_validator(mode="after")
     def _cors_is_derived_from_the_frontend_origin(self) -> "Settings":
         """Keep the CORS list in step with ``FRONTEND_ORIGIN``.
@@ -148,9 +135,14 @@ class Settings(BaseSettings):
         development the local origins are added so that the Vite dev server
         and the backend can talk to each other.
         """
+        raw = self.cors_origins
+        if isinstance(raw, str):
+            parts = [item.strip() for item in raw.split(",") if item.strip()]
+        else:
+            parts = list(raw)
         origins = [
             origin.strip().rstrip("/")
-            for origin in self.cors_origins
+            for origin in parts
             if origin.strip() and origin.strip() != "*"
         ]
         frontend = self.frontend_origin.strip().rstrip("/")

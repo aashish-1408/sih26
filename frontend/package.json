@@ -1,9 +1,9 @@
 {
-  "name": "edusync-frontend",
+  "name": "veriducate-frontend",
   "private": true,
   "version": "2.0.0",
   "type": "module",
-  "description": "EduSynC - APAAR ID Student Data Management and Verification Platform (web frontend)",
+  "description": "Veriducate - Academic Admission Compliance and Credential Verification Platform (web frontend)",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

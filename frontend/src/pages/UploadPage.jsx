@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import PageHeader from '../components/layout/PageHeader'
 import { Badge, Card, EmptyState, ErrorState, Spinner } from '../components/common'
 import { useAuth } from '../hooks/useAuth'
 import { api, errorMessage } from '../services/api'
@@ -73,10 +72,10 @@ export default function UploadPage() {
 
   return (
     <>
-      <PageHeader
-        title="Upload a student batch"
-        lead="Validate a spreadsheet against the live registry before anything is written. Rows that fail validation are quarantined for review, never silently dropped."
-      />
+      <div className="page-header">
+        <h1 className="page-title">Upload a Student Batch</h1>
+        <p className="page-subtitle">Validate a spreadsheet against the live registry before anything is written. Rows that fail validation are quarantined for review, never silently dropped.</p>
+      </div>
 
       <div className="grid gap-4 lg:grid-cols-[1fr_1.2fr]">
         <Card title="Batch" subtitle="The supported CSV template is shown below.">
@@ -104,13 +103,13 @@ export default function UploadPage() {
             />
 
             {error && (
-              <p role="alert" className="mt-3 mb-0 text-sm text-crimson">
+              <p role="alert" className="mt-3 mb-0 text-sm text-danger">
                 {error}
               </p>
             )}
 
             <div className="flex gap-2 mt-5">
-              <button type="submit" className="btn btn-navy" disabled={busy}>
+              <button type="submit" className="btn btn-primary" disabled={busy}>
                 {busy ? 'Validating...' : 'Validate the batch'}
               </button>
               {preview && (
@@ -122,10 +121,10 @@ export default function UploadPage() {
           </form>
 
           <details className="mt-5">
-            <summary className="cursor-pointer text-sm font-semibold text-navy">
+            <summary className="cursor-pointer text-sm font-semibold text-brand-text">
               Show the CSV template
             </summary>
-            <pre className="code-panel">
+            <pre className="mt-2 p-3 rounded-lg bg-surface-2 text-xs font-mono overflow-x-auto border border-line">
               {TEMPLATE}
             </pre>
           </details>
@@ -136,19 +135,19 @@ export default function UploadPage() {
             <Card title="Batch committed">
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 <div>
-                  <p className="m-0 text-2xl font-extrabold text-navy">{result.committed}</p>
+                  <p className="m-0 text-2xl font-extrabold text-brand-text">{result.committed}</p>
                   <p className="m-0 text-[11px] uppercase tracking-wider text-muted">Accepted</p>
                 </div>
                 <div>
-                  <p className="m-0 text-2xl font-extrabold text-crimson">{result.critical_rows}</p>
+                  <p className="m-0 text-2xl font-extrabold text-danger">{result.critical_rows}</p>
                   <p className="m-0 text-[11px] uppercase tracking-wider text-muted">Quarantined</p>
                 </div>
                 <div>
-                  <p className="m-0 text-2xl font-extrabold text-saffron">{result.warning_rows}</p>
+                  <p className="m-0 text-2xl font-extrabold text-warning">{result.warning_rows}</p>
                   <p className="m-0 text-[11px] uppercase tracking-wider text-muted">Warnings</p>
                 </div>
                 <div>
-                  <p className="m-0 text-2xl font-extrabold text-navy">{result.anomalies_detected}</p>
+                  <p className="m-0 text-2xl font-extrabold text-brand-text">{result.anomalies_detected}</p>
                   <p className="m-0 text-[11px] uppercase tracking-wider text-muted">Anomalies</p>
                 </div>
               </div>
@@ -181,7 +180,7 @@ export default function UploadPage() {
               <>
                 {preview.program_impacts?.length > 0 && (
                   <div className="mb-4">
-                    <p className="m-0 mb-2 text-sm font-semibold text-navy">Seat impact</p>
+                    <p className="m-0 mb-2 text-sm font-semibold text-brand-text">Seat impact</p>
                     <div className="table-wrap">
                       <table className="data-table">
                         <thead>
@@ -216,7 +215,7 @@ export default function UploadPage() {
                       </table>
                     </div>
                     {preview.program_impacts.some((i) => i.cap_messages?.length > 0) && (
-                      <ul className="mt-2 mb-0 pl-5 text-xs text-crimson">
+                      <ul className="mt-2 mb-0 pl-5 text-xs text-danger">
                         {preview.program_impacts
                           .flatMap((i) => i.cap_messages || [])
                           .map((message) => (

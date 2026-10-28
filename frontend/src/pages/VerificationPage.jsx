@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-import PageHeader from '../components/layout/PageHeader'
 import { Badge, Card, EmptyState } from '../components/common'
 import { api, errorMessage } from '../services/api'
 import { formatApaar, formatDateTime, severityClass } from '../utils/format'
@@ -100,10 +99,10 @@ export default function VerificationPage() {
 
   return (
     <>
-      <PageHeader
-        title="Verify an APAAR credential"
-        lead="The verdict is always issued. The personal fields are disclosed only when the student has consented to credential verification."
-      />
+      <div className="page-header">
+        <h1 className="page-title">Verify an APAAR Credential</h1>
+        <p className="page-subtitle">The verdict is always issued. The personal fields are disclosed only when the student has consented to credential verification.</p>
+      </div>
 
       <div className="grid gap-4 lg:grid-cols-[1fr_1.3fr]">
         <Card title="Verification request">
@@ -122,19 +121,19 @@ export default function VerificationPage() {
             />
 
             {error && (
-              <p role="alert" className="mt-3 mb-0 text-sm text-crimson">
+              <p role="alert" className="mt-3 mb-0 text-sm text-danger">
                 {error}
               </p>
             )}
 
-            <button type="submit" className="btn btn-navy w-full mt-5" disabled={busy}>
+            <button type="submit" className="btn btn-primary w-full mt-5" disabled={busy}>
               {busy ? 'Verifying...' : 'Verify credential'}
             </button>
           </form>
 
           <hr className="my-5 border-line" />
 
-          <p className="m-0 mb-2 text-sm font-semibold text-navy">Scan the APAAR QR badge</p>
+          <p className="m-0 mb-2 text-sm font-semibold text-brand-text">Scan the APAAR QR badge</p>
           <video
             ref={videoRef}
             className="w-full max-w-sm rounded-xl bg-black"

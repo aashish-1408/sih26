@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import PageHeader from '../components/layout/PageHeader'
 import { Badge, Card, EmptyState, ErrorState, FilterBar, Spinner } from '../components/common'
 import { useApi } from '../hooks/useApi'
 import { useDebounce } from '../hooks/useDebounce'
@@ -24,9 +23,9 @@ const CORRECTABLE_FIELDS = [
 ]
 
 const CERTAINTY_CLASS = {
-  confirmed: 'bg-danger-surface text-danger-strong',
-  suspected: 'bg-warning-surface text-warning-strong',
-  review_only: 'bg-info-surface text-info-strong',
+  confirmed: 'badge-critical',
+  suspected: 'badge-warning',
+  review_only: 'badge-info',
 }
 
 const TASK_STATUSES = [
@@ -39,7 +38,7 @@ const TASK_STATUSES = [
 function BeforeAfter({ field, before, after }) {
   return (
     <tr>
-      <td className="font-semibold text-navy">{field}</td>
+      <td className="font-semibold text-brand-text">{field}</td>
       <td className="font-mono text-xs">
         <span className="line-through opacity-70">{String(before ?? '-') || '-'}</span>
       </td>
@@ -164,10 +163,10 @@ export default function ImpactPage() {
 
   return (
     <>
-      <PageHeader
-        title="Change Impact"
-        lead="Preview a correction, see what it would affect, and then apply it. The preview writes nothing, and applying a correction never modifies a linked record - the linked work becomes a checklist for an authorised reviewer."
-      />
+      <div className="page-header">
+        <h1 className="page-title">Change Impact</h1>
+        <p className="page-subtitle">Preview a correction, see what it would affect, and then apply it. The preview writes nothing, and applying a correction never modifies a linked record - the linked work becomes a checklist for an authorised reviewer.</p>
+      </div>
 
       {error && <ErrorState message={error} />}
 
@@ -209,7 +208,7 @@ export default function ImpactPage() {
                         onClick={() => setSelected(row)}
                       >
                         <td className="font-mono text-xs">{maskApaar(row.apaar_id)}</td>
-                        <td className="text-xs font-semibold text-navy">
+                        <td className="text-xs font-semibold text-brand-text">
                           {row.student_name || '(no name)'}
                           <p className="m-0 text-muted">
                             {row.institution_id} &middot; {row.program_id}
@@ -254,7 +253,7 @@ export default function ImpactPage() {
                         if (after === '' && before === '') return null
                         return (
                           <tr key={name}>
-                            <td className="font-semibold text-navy">{label}</td>
+                            <td className="font-semibold text-brand-text">{label}</td>
                             <td className="font-mono text-xs opacity-70">
                               {String(before) || '-'}
                             </td>
@@ -292,7 +291,7 @@ export default function ImpactPage() {
                 <div className="flex gap-2 mt-5">
                   <button
                     type="button"
-                    className="btn btn-navy"
+                    className="btn btn-primary"
                     onClick={runPreview}
                     disabled={busy}
                   >
@@ -375,10 +374,10 @@ export default function ImpactPage() {
                         </Badge>
                         <span className="font-mono text-xs text-muted">{finding.rule_id}</span>
                       </div>
-                      <p className="m-0 mt-2 font-semibold text-navy">{finding.title}</p>
+                      <p className="m-0 mt-2 font-semibold text-brand-text">{finding.title}</p>
                       <p className="m-0 mt-1 text-sm text-muted">{finding.explanation}</p>
                       {finding.suggested_action && (
-                        <p className="m-0 mt-1 text-xs text-mid-blue">
+                        <p className="m-0 mt-1 text-xs text-brand-mid">
                           Next: {finding.suggested_action}
                         </p>
                       )}
@@ -412,9 +411,9 @@ export default function ImpactPage() {
                       <Badge className="bg-neutral-surface text-neutral-strong">{task.status}</Badge>
                       <span className="font-mono text-xs text-muted">{task.rule_id}</span>
                     </div>
-                    <p className="m-0 mt-2 font-semibold text-navy">{task.title}</p>
+                    <p className="m-0 mt-2 font-semibold text-brand-text">{task.title}</p>
                     <p className="m-0 mt-1 text-sm text-muted">{task.explanation}</p>
-                    <p className="m-0 mt-1 text-xs text-mid-blue">
+                    <p className="m-0 mt-1 text-xs text-brand-mid">
                       Next: {task.suggested_action}
                     </p>
                     {task.status !== 'resolved' && task.status !== 'dismissed' && (
@@ -498,7 +497,7 @@ export default function ImpactPage() {
                     <span className="font-mono text-xs text-muted">
                       v{version.version_no}
                     </span>{' '}
-                    <span className="font-semibold text-navy">
+                    <span className="font-semibold text-brand-text">
                       {version.changed_fields.join(', ')}
                     </span>
                     <p className="m-0 text-xs text-muted">

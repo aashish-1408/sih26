@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import PageHeader from '../components/layout/PageHeader'
 import { Badge, Card, EmptyState, ErrorState, FilterBar, Spinner } from '../components/common'
 import { useApi } from '../hooks/useApi'
 import { useDebounce } from '../hooks/useDebounce'
@@ -41,10 +40,10 @@ export default function StudentsPage() {
 
   return (
     <>
-      <PageHeader
-        title="Student register"
-        lead="Every enrolment record the registry holds, with the APAAR ID masked unless the full identifier is needed."
-      />
+      <div className="page-header">
+        <h1 className="page-title">Student Register</h1>
+        <p className="page-subtitle">Every enrolment record the registry holds, with the APAAR ID masked unless the full identifier is needed.</p>
+      </div>
 
       <FilterBar>
         <div className="w-72">
@@ -126,8 +125,8 @@ export default function StudentsPage() {
                   <tr key={row.record_id}>
                     <td className="font-mono text-xs">{formatApaar(row.apaar_id)}</td>
                     <td>
-                      <p className="m-0 font-semibold text-navy">
-                        {row.student_name || <span className="text-crimson">Missing</span>}
+                      <p className="m-0 font-semibold text-brand-text">
+                        {row.student_name || <span className="text-danger">Missing</span>}
                       </p>
                       <p className="m-0 text-xs text-muted">
                         {row.student_institute_roll_no || 'No roll number'}
