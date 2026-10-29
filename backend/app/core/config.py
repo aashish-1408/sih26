@@ -153,6 +153,7 @@ class Settings(BaseSettings):
                 "http://localhost:8000",
                 "http://127.0.0.1:8000",
                 "http://localhost:5173",
+                "https://frontend-xi-three-51.vercel.app",
             ]
         object.__setattr__(self, "cors_origins", origins)
         return self
