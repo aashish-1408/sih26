@@ -1,0 +1,379 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 960" width="1600" height="960">
+  <defs>
+    <style>
+      .bg { fill: #FFFFFF; }
+      .title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 20px; fill: #0F2F73; }
+      .subtitle { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 13px; fill: #475569; }
+      .section-hdr { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 11px; fill: #1E293B; letter-spacing: 0.08em; text-transform: uppercase; }
+      .box-title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-weight: 600; font-size: 13px; fill: #0F172A; }
+      .box-desc { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 11px; fill: #334155; line-height: 1.35; }
+      .box-sub { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 10px; fill: #64748B; }
+      .code-font { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 10.5px; fill: #0F2F73; }
+      .pill-text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-weight: 600; font-size: 9px; letter-spacing: 0.04em; }
+      
+      /* Box styles */
+      .box-impl { fill: #F8FAFC; stroke: #94A3B8; stroke-width: 1.25; }
+      .box-accent { fill: #F0F4F8; stroke: #0F2F73; stroke-width: 1.5; }
+      .box-teal { fill: #F0FDFA; stroke: #0D9488; stroke-width: 1.25; }
+      .box-prop { fill: #FAFAFA; stroke: #94A3B8; stroke-width: 1.25; stroke-dasharray: 4 3; }
+      .box-group { fill: #FFFFFF; stroke: #E2E8F0; stroke-width: 1; }
+      
+      /* Connectors */
+      .conn { fill: none; stroke: #475569; stroke-width: 1.25; }
+      .conn-dash { fill: none; stroke: #64748B; stroke-width: 1.25; stroke-dasharray: 4 3; }
+      .conn-label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 9.5px; fill: #475569; background-color: #FFFFFF; }
+      
+      /* Badges */
+      .badge-impl { fill: #EFF6FF; stroke: #3B82F6; stroke-width: 1; }
+      .badge-impl-txt { fill: #1D4ED8; }
+      .badge-prop { fill: #FFFBEB; stroke: #F59E0B; stroke-width: 1; }
+      .badge-prop-txt { fill: #B45309; }
+      .badge-core { fill: #F0FDF4; stroke: #10B981; stroke-width: 1; }
+      .badge-core-txt { fill: #047857; }
+    </style>
+
+    <!-- Markers for arrows -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#475569" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#0F2F73" />
+    </marker>
+    <marker id="arrow-dash" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#64748B" />
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1600" height="960" class="bg" />
+
+  <!-- TOP HEADER BAR -->
+  <rect x="40" y="30" width="1520" height="52" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+  <rect x="40" y="30" width="6" height="52" fill="#0F2F73" />
+  <text x="60" y="52" class="title">DIAGRAM 01: SYSTEM ARCHITECTURE OVERVIEW</text>
+  <text x="60" y="70" class="subtitle">VERIDUCATE — Academic Admission Compliance &amp; Credential Verification Platform (Problem Statement SIH26263)</text>
+  
+  <!-- LEGEND -->
+  <g transform="translate(1120, 42)">
+    <!-- Implemented -->
+    <rect x="0" y="0" width="14" height="14" class="box-impl" />
+    <text x="22" y="11" class="box-desc" font-size="11">Implemented &amp; Tested</text>
+    <rect x="150" y="0" width="14" height="14" class="box-teal" />
+    <text x="172" y="11" class="box-desc" font-size="11">Core Crypto / Rules</text>
+    <!-- Proposed -->
+    <rect x="290" y="0" width="14" height="14" class="box-prop" />
+    <text x="312" y="11" class="box-desc" font-size="11">Planned / Proposed</text>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- LAYER 1: USER ACTORS & ROLES (Y: 105 - 165) -->
+  <!-- ========================================================================= -->
+  <rect x="40" y="102" width="1520" height="68" class="box-group" />
+  <text x="55" y="120" class="section-hdr">1. ACTORS &amp; ACCESS CONTROL (app.core.rbac &bull; 4 Roles &bull; 17 Granular Permissions)</text>
+
+  <!-- Role 1: AICTE Admin -->
+  <g transform="translate(60, 128)">
+    <rect x="0" y="0" width="340" height="34" class="box-accent" />
+    <text x="12" y="18" class="box-title">AICTE Directorate / Admin</text>
+    <text x="12" y="28" class="box-sub">Role: aicte_admin &bull; National Oversight &bull; Review &amp; Corrections</text>
+    <rect x="250" y="7" width="80" height="18" class="badge-impl" />
+    <text x="258" y="19" class="pill-text badge-impl-txt">IMPLEMENTED</text>
+  </g>
+
+  <!-- Role 2: Institution Admin -->
+  <g transform="translate(430, 128)">
+    <rect x="0" y="0" width="340" height="34" class="box-impl" />
+    <text x="12" y="18" class="box-title">Institution Administrator</text>
+    <text x="12" y="28" class="box-sub">Role: institution_admin &bull; CSV Ingestion &bull; Scoped Data</text>
+    <rect x="250" y="7" width="80" height="18" class="badge-impl" />
+    <text x="258" y="19" class="pill-text badge-impl-txt">IMPLEMENTED</text>
+  </g>
+
+  <!-- Role 3: External Verifier -->
+  <g transform="translate(800, 128)">
+    <rect x="0" y="0" width="340" height="34" class="box-impl" />
+    <text x="12" y="18" class="box-title">External Verifier / Employer</text>
+    <text x="12" y="28" class="box-sub">Role: verifier &bull; Credential Validation &bull; Audit Check</text>
+    <rect x="250" y="7" width="80" height="18" class="badge-impl" />
+    <text x="258" y="19" class="pill-text badge-impl-txt">IMPLEMENTED</text>
+  </g>
+
+  <!-- Role 4: Student -->
+  <g transform="translate(1170, 128)">
+    <rect x="0" y="0" width="370" height="34" class="box-impl" />
+    <text x="12" y="18" class="box-title">Student / APAAR Holder</text>
+    <text x="12" y="28" class="box-sub">Role: student &bull; View Record &bull; QR Badge &bull; DPDP Consent</text>
+    <rect x="280" y="7" width="80" height="18" class="badge-impl" />
+    <text x="288" y="19" class="pill-text badge-impl-txt">IMPLEMENTED</text>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- LAYER 2: CLIENT PLATFORMS (Y: 195 - 280) -->
+  <!-- ========================================================================= -->
+  <rect x="40" y="190" width="1520" height="92" class="box-group" />
+  <text x="55" y="208" class="section-hdr">2. PRESENTATION &amp; CLIENT APPLICATIONS</text>
+
+  <!-- Web Frontend (Primary) -->
+  <g transform="translate(60, 218)">
+    <rect x="0" y="0" width="1080" height="54" class="box-impl" />
+    <text x="16" y="22" class="box-title">Web Frontend Portal (React 19 &bull; Vite 6 &bull; Tailwind CSS 4 &bull; Recharts 3 &bull; React Router 7)</text>
+    <text x="16" y="40" class="box-desc">11 Functional Pages &bull; Client RBAC Mirror (permissions.js) &bull; 13 Regional Locales (i18next) &bull; PWA &bull; Vercel Deployment</text>
+    <rect x="980" y="16" width="84" height="20" class="badge-core" />
+    <text x="988" y="30" class="pill-text badge-core-txt">487 TESTS PASS</text>
+  </g>
+
+  <!-- Mobile Client (Android) -->
+  <g transform="translate(1160, 218)">
+    <rect x="0" y="0" width="380" height="54" class="box-impl" />
+    <text x="14" y="20" class="box-title">Acadentrix Android Client</text>
+    <text x="14" y="34" class="box-sub">Kotlin 2.2 &bull; Jetpack Compose &bull; Room DB</text>
+    <text x="14" y="46" class="box-desc" font-size="10">Offline-first local validation engine (185 tests)</text>
+    <rect x="285" y="16" width="85" height="18" class="badge-impl" />
+    <text x="293" y="28" class="pill-text badge-impl-txt">OFFLINE-FIRST</text>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- LAYER 3: API & SECURITY GATEWAY (Y: 305 - 395) -->
+  <!-- ========================================================================= -->
+  <rect x="40" y="302" width="1520" height="94" class="box-group" />
+  <text x="55" y="320" class="section-hdr">3. API GATEWAY &amp; SECURITY MIDDLEWARE (FastAPI 0.115.4 &bull; Uvicorn &bull; Render Web Service)</text>
+
+  <!-- Security Modules -->
+  <g transform="translate(60, 330)">
+    <!-- Auth & Identity -->
+    <rect x="0" y="0" width="340" height="54" class="box-accent" />
+    <text x="14" y="20" class="box-title">Authentication &amp; Identity</text>
+    <text x="14" y="35" class="box-desc">JWT HS256 &bull; Google OAuth 2.0 (CSRF state)</text>
+    <text x="14" y="47" class="box-sub">Bcrypt password hashing &bull; API keys (veriducate_*)</text>
+  </g>
+
+  <g transform="translate(420, 330)">
+    <!-- RBAC & Multi-Tenant Scoping -->
+    <rect x="0" y="0" width="350" height="54" class="box-accent" />
+    <text x="14" y="20" class="box-title">RBAC &amp; Tenant Scope Isolation</text>
+    <text x="14" y="35" class="box-desc">app.core.rbac &bull; require_permission()</text>
+    <text x="14" y="47" class="box-sub">require_scope(institution_id) multi-tenant protection</text>
+  </g>
+
+  <g transform="translate(790, 330)">
+    <!-- Rate Limiter -->
+    <rect x="0" y="0" width="350" height="54" class="box-impl" />
+    <text x="14" y="20" class="box-title">Rate Limiting &amp; Input Shield</text>
+    <text x="14" y="35" class="box-desc">In-process memory limiter (Current)</text>
+    <text x="14" y="47" class="box-sub">Target: Distributed Redis Limiter (Proposed TD-02)</text>
+    <rect x="250" y="14" width="85" height="18" class="badge-prop" />
+    <text x="256" y="26" class="pill-text badge-prop-txt">IN-PROCESS</text>
+  </g>
+
+  <g transform="translate(1160, 330)">
+    <!-- Audit Interceptor -->
+    <rect x="0" y="0" width="380" height="54" class="box-accent" />
+    <text x="14" y="20" class="box-title">Tamper-Evident Audit Interceptor</text>
+    <text x="14" y="35" class="box-desc">Captures actor, action, subject, timestamp, IP</text>
+    <text x="14" y="47" class="box-sub">Feeds SHA-256 hash-chaining writer synchronously</text>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- LAYER 4: CORE APPLICATION SERVICES (Y: 418 - 610) -->
+  <!-- ========================================================================= -->
+  <rect x="40" y="415" width="1520" height="195" class="box-group" />
+  <text x="55" y="433" class="section-hdr">4. CORE DOMAIN SERVICES &amp; VERIFICATION LOGIC (Pure Deterministic Functions &bull; No Black-Box ML)</text>
+
+  <!-- Column 1: Ingestion Engine -->
+  <g transform="translate(60, 445)">
+    <rect x="0" y="0" width="340" height="152" class="box-impl" />
+    <text x="14" y="22" class="box-title">1. CSV Ingestion &amp; Preview</text>
+    <text x="14" y="38" class="code-font">app.services.csv_ingestion</text>
+    <path d="M 14 46 L 326 46" stroke="#E2E8F0" stroke-width="1" />
+    <text x="14" y="62" class="box-desc">&bull; RFC 4180 streaming parser (BOM-tolerant)</text>
+    <text x="14" y="78" class="box-desc">&bull; CsvValidationContext: live registry check</text>
+    <text x="14" y="94" class="box-desc">&bull; Two-phase preview-before-commit</text>
+    <text x="14" y="110" class="box-desc">&bull; Intake seat &amp; supernumerary projection</text>
+    <text x="14" y="126" class="box-desc">&bull; Quarantines CRITICAL rows; commits valid</text>
+    <text x="14" y="142" class="box-sub">API: /bulk/preview &bull; /bulk/commit</text>
+  </g>
+
+  <!-- Column 2: 10-Layer Anomaly Engine -->
+  <g transform="translate(420, 445)">
+    <rect x="0" y="0" width="350" height="152" class="box-teal" />
+    <text x="14" y="22" class="box-title">2. 10-Layer Anomaly Engine</text>
+    <text x="14" y="38" class="code-font">app.services.anomaly_engine</text>
+    <path d="M 14 46 L 336 46" stroke="#CCFBF1" stroke-width="1" />
+    <text x="14" y="62" class="box-desc">&bull; L1: Syntax &amp; Luhn checksum (masked ID)</text>
+    <text x="14" y="78" class="box-desc">&bull; L2-L4: Cross-college, same-inst, roll duplicates</text>
+    <text x="14" y="94" class="box-desc">&bull; L5-L6: Approved intake &amp; supernumerary caps</text>
+    <text x="14" y="110" class="box-sub">  (NRI 5%, OCI/FN 15%, TFW 5%, PMSSS cap)</text>
+    <text x="14" y="126" class="box-desc">&bull; L7-L10: Category, dates, fields, sanctions</text>
+    <text x="14" y="142" class="box-sub">Full registry snapshot &bull; 40 unit tests</text>
+  </g>
+
+  <!-- Column 3: Change Impact Detector -->
+  <g transform="translate(790, 445)">
+    <rect x="0" y="0" width="350" height="152" class="box-impl" />
+    <text x="14" y="22" class="box-title">3. Change Impact Detector (CIA)</text>
+    <text x="14" y="38" class="code-font">app.services.impact_engine</text>
+    <path d="M 14 46 L 336 46" stroke="#E2E8F0" stroke-width="1" />
+    <text x="14" y="62" class="box-desc">&bull; 6 Impact Rules: CIA-A through CIA-F</text>
+    <text x="14" y="78" class="box-desc">&bull; "What else breaks before applying edits?"</text>
+    <text x="14" y="94" class="box-desc">&bull; Optimistic locking (expected_version)</text>
+    <text x="14" y="110" class="box-desc">&bull; Creates Review Tasks in review queue</text>
+    <text x="14" y="126" class="box-desc">&bull; Multi-collection transactional update</text>
+    <text x="14" y="142" class="box-sub">Never silently modifies linked records</text>
+  </g>
+
+  <!-- Column 4: Trust, Sealing & DPDP -->
+  <g transform="translate(1160, 445)">
+    <rect x="0" y="0" width="380" height="152" class="box-teal" />
+    <text x="14" y="22" class="box-title">4. Trust, Sealing &amp; Consent</text>
+    <text x="14" y="38" class="code-font">app.services.seal &bull; consent_policy</text>
+    <path d="M 14 46 L 366 46" stroke="#CCFBF1" stroke-width="1" />
+    <text x="14" y="62" class="box-desc">&bull; 3 Seal Gens: Legacy, HMAC-SHA256, Ed25519</text>
+    <text x="14" y="78" class="box-desc">&bull; DPDP Consent: Purpose-wise grant &amp; revoke</text>
+    <text x="14" y="94" class="box-desc">&bull; Opaque tokens: high-entropy, expiring, revocable</text>
+    <text x="14" y="110" class="box-desc">&bull; QR generator &bull; ReportLab PDF certificates</text>
+    <text x="14" y="126" class="box-desc">&bull; Privacy: equality lookup via apaar_id_hmac</text>
+    <text x="14" y="142" class="box-sub">Public verification withholds PII without consent</text>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- LAYER 5: BACKGROUND & ASYNCHRONOUS PROCESSING (Y: 630 - 695) -->
+  <!-- ========================================================================= -->
+  <rect x="40" y="628" width="1520" height="68" class="box-group" />
+  <text x="55" y="646" class="section-hdr">5. EXECUTION PIPELINE: SYNCHRONOUS RUNTIME (CURRENT) VS ASYNC QUEUE (TARGET)</text>
+
+  <!-- Current Path: Synchronous -->
+  <g transform="translate(60, 654)">
+    <rect x="0" y="0" width="710" height="34" class="box-impl" />
+    <text x="14" y="18" class="box-title">Synchronous Event-Loop Pipeline (Current Implementation)</text>
+    <text x="14" y="28" class="box-sub">FastAPI async worker &bull; In-request validation &bull; Synchronous anomaly recompute on commit &bull; Atlas ACID txns</text>
+    <rect x="610" y="8" width="90" height="18" class="badge-impl" />
+    <text x="616" y="20" class="pill-text badge-impl-txt">ACTIVE PIPELINE</text>
+  </g>
+
+  <!-- Target Path: Redis + ARQ -->
+  <g transform="translate(790, 654)">
+    <rect x="0" y="0" width="750" height="34" class="box-prop" />
+    <text x="14" y="18" class="box-title">Background Job Queue: Redis + ARQ Workers (Planned Target Architecture TD-03)</text>
+    <text x="14" y="28" class="box-sub">Async bulk file processing &bull; Incremental anomaly delta computation &bull; Distributed Celery/ARQ workers</text>
+    <rect x="650" y="8" width="90" height="18" class="badge-prop" />
+    <text x="656" y="20" class="pill-text badge-prop-txt">PLANNED TARGET</text>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- LAYER 6: PERSISTENCE & DATA INTEGRITY (Y: 715 - 890) -->
+  <!-- ========================================================================= -->
+  <rect x="40" y="712" width="1520" height="182" class="box-group" />
+  <text x="55" y="730" class="section-hdr">6. PERSISTENCE &amp; CRYPTOGRAPHIC STORAGE (MongoDB 7.0 &bull; Motor Async &bull; Atlas Replica Set)</text>
+
+  <!-- Collection 1: Students & Identifiers -->
+  <g transform="translate(60, 742)">
+    <rect x="0" y="0" width="280" height="68" class="box-teal" />
+    <text x="12" y="18" class="box-title">students</text>
+    <text x="12" y="32" class="box-desc">Keyed HMAC lookup: apaar_id_hmac</text>
+    <text x="12" y="46" class="box-sub">No unique index on APAAR ID (deliberate</text>
+    <text x="12" y="58" class="box-sub">to detect cross-institution duplicates)</text>
+  </g>
+
+  <!-- Collection 2: Institutions & Programmes -->
+  <g transform="translate(360, 742)">
+    <rect x="0" y="0" width="280" height="68" class="box-impl" />
+    <text x="12" y="18" class="box-title">institutions &amp; programmes</text>
+    <text x="12" y="32" class="box-desc">Approved intake &amp; supernumerary caps</text>
+    <text x="12" y="46" class="box-sub">Versioned policy: policy_version</text>
+    <text x="12" y="58" class="box-sub">Rules change as data, not code</text>
+  </g>
+
+  <!-- Collection 3: Anomalies & Review Tasks -->
+  <g transform="translate(660, 742)">
+    <rect x="0" y="0" width="280" height="68" class="box-impl" />
+    <text x="12" y="18" class="box-title">anomalies &amp; review_tasks</text>
+    <text x="12" y="32" class="box-desc">Findings with severity &amp; actions</text>
+    <text x="12" y="46" class="box-sub">Lifecycle: PENDING &rarr; RESOLVED</text>
+    <text x="12" y="58" class="box-sub">Impact tasks linked to corrections</text>
+  </g>
+
+  <!-- Collection 4: Audit Trail (Hash Chain) -->
+  <g transform="translate(960, 742)">
+    <rect x="0" y="0" width="280" height="68" class="box-teal" />
+    <text x="12" y="18" class="box-title">audit_events (Hash-Chained)</text>
+    <text x="12" y="32" class="box-desc">H_n = SHA-256(H_n-1 || payload)</text>
+    <text x="12" y="46" class="box-sub">Genesis: "0"*64 &bull; Offline verifiable</text>
+    <text x="12" y="58" class="box-sub">Masked APAAR only &bull; Tamper-evident</text>
+  </g>
+
+  <!-- Collection 5: Consent Ledger -->
+  <g transform="translate(1260, 742)">
+    <rect x="0" y="0" width="280" height="68" class="box-teal" />
+    <text x="12" y="18" class="box-title">consents (DPDP Act)</text>
+    <text x="12" y="32" class="box-desc">Purpose-wise consent ledger</text>
+    <text x="12" y="46" class="box-sub">PURPOSE_VERIFICATION, etc.</text>
+    <text x="12" y="58" class="box-sub">Revocation beats earlier grants</text>
+  </g>
+
+  <!-- Bottom Row of Collections: Tokens, Versions, Submissions, Users -->
+  <g transform="translate(60, 820)">
+    <rect x="0" y="0" width="340" height="60" class="box-impl" />
+    <text x="12" y="18" class="box-title">verification_tokens &amp; revoked</text>
+    <text x="12" y="32" class="box-desc">SHA-256 hashed token lookup &bull; Revocation list</text>
+    <text x="12" y="46" class="box-sub">Tokens never expose raw APAAR ID</text>
+  </g>
+
+  <g transform="translate(420, 820)">
+    <rect x="0" y="0" width="350" height="60" class="box-impl" />
+    <text x="12" y="18" class="box-title">record_versions &amp; impact_assessments</text>
+    <text x="12" y="32" class="box-desc">Full before/after state snapshots &bull; Actor &amp; reason</text>
+    <text x="12" y="46" class="box-sub">Enables multi-step rollback and forensic reviews</text>
+  </g>
+
+  <g transform="translate(790, 820)">
+    <rect x="0" y="0" width="350" height="60" class="box-impl" />
+    <text x="12" y="18" class="box-title">submissions &amp; operation_status</text>
+    <text x="12" y="32" class="box-desc">Batch provenance: filename, accepted, quarantined</text>
+    <text x="12" y="46" class="box-sub">Atomic state recovery on standalone MongoDB</text>
+  </g>
+
+  <g transform="translate(1160, 820)">
+    <rect x="0" y="0" width="380" height="60" class="box-impl" />
+    <text x="12" y="18" class="box-title">users &amp; api_keys</text>
+    <text x="12" y="32" class="box-desc">Bcrypt credentials &bull; Scoped API key hashes (SHA-256)</text>
+    <text x="12" y="46" class="box-sub">Tenant ownership and administrative account profiles</text>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- CONNECTORS (ORTHOGONAL) -->
+  <!-- ========================================================================= -->
+  <!-- Actors to Frontend -->
+  <path d="M 230 162 L 230 218" class="conn" marker-end="url(#arrow)" />
+  <path d="M 600 162 L 600 218" class="conn" marker-end="url(#arrow)" />
+  <path d="M 970 162 L 970 218" class="conn" marker-end="url(#arrow)" />
+  <path d="M 1355 162 L 1355 218" class="conn" marker-end="url(#arrow)" />
+
+  <!-- Frontend to Gateway -->
+  <path d="M 600 272 L 600 302" class="conn" marker-end="url(#arrow-blue)" />
+  <text x="608" y="292" class="conn-label">REST / JSON (JWT Bearer)</text>
+
+  <!-- Mobile to Seal / Verification (Dual Core Rule Sync) -->
+  <path d="M 1350 272 L 1350 445" class="conn" marker-end="url(#arrow)" />
+  <text x="1358" y="315" class="conn-label">Shared Spec (Dual Python/Kotlin)</text>
+
+  <!-- Gateway to Services -->
+  <path d="M 230 384 L 230 445" class="conn" marker-end="url(#arrow)" />
+  <path d="M 595 384 L 595 445" class="conn" marker-end="url(#arrow)" />
+  <path d="M 965 384 L 965 445" class="conn" marker-end="url(#arrow)" />
+  <path d="M 1350 384 L 1350 445" class="conn" marker-end="url(#arrow)" />
+
+  <!-- Services to In-Request Execution -->
+  <path d="M 230 597 L 230 654" class="conn" marker-end="url(#arrow)" />
+  <path d="M 595 597 L 595 654" class="conn" marker-end="url(#arrow)" />
+
+  <!-- Services to Planned Queue (Dashed) -->
+  <path d="M 965 597 L 965 654" class="conn-dash" marker-end="url(#arrow-dash)" />
+
+  <!-- Execution Pipeline to MongoDB -->
+  <path d="M 415 688 L 415 712" class="conn" marker-end="url(#arrow-blue)" />
+  <text x="425" y="704" class="conn-label">Async Motor Driver &bull; Replica Set ACID Transactions</text>
+
+  <!-- FOOTER -->
+  <text x="40" y="925" class="box-sub">Target Architecture: Veriducate (FastAPI + React 19 + MongoDB 7 + Kotlin) | Dual-platform validation logic | SIH 2026 Problem SIH26263</text>
+  <text x="1150" y="925" class="box-sub">Source of Truth: sih26 Repository Codebase &bull; Verified against 487 Unit &amp; Integration Tests</text>
+</svg>
