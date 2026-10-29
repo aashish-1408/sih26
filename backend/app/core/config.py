@@ -105,7 +105,7 @@ class Settings(BaseSettings):
     # ----------------------------------------------------------- demo data
     #: The password given to the seeded demo accounts. When it is empty the
     #: seed script generates one and prints it once.
-    demo_password: str = ""
+    demo_password: str = "DemoSIH2026!"
     #: Seeding a production database is refused unless this is switched on.
     allow_production_seed: bool = False
     #: The lifetime of a verification token, in minutes.
@@ -153,6 +153,7 @@ class Settings(BaseSettings):
                 "http://localhost:8000",
                 "http://127.0.0.1:8000",
                 "http://localhost:5173",
+                "https://frontend-xi-three-51.vercel.app",
             ]
         object.__setattr__(self, "cors_origins", origins)
         return self
