@@ -105,7 +105,7 @@ class Settings(BaseSettings):
     # ----------------------------------------------------------- demo data
     #: The password given to the seeded demo accounts. When it is empty the
     #: seed script generates one and prints it once.
-    demo_password: str = ""
+    demo_password: str = "DemoSIH2026!"
     #: Seeding a production database is refused unless this is switched on.
     allow_production_seed: bool = False
     #: The lifetime of a verification token, in minutes.
